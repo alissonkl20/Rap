@@ -15,7 +15,7 @@ public class UserModel {
     @Column(nullable = false)
     private String password;
     
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private UserPage userPage;
     public UserModel() {
     }

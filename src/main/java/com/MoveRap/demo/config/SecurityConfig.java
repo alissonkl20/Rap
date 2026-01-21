@@ -17,7 +17,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 
 @Configuration
 @EnableWebSecurity
@@ -66,8 +65,7 @@ public class SecurityConfig {
                     .requestMatchers("/user-page/**").authenticated()
                     // Qualquer outra requisição requer autenticação
                     .anyRequest().authenticated()
-                )
-            .httpBasic(Customizer.withDefaults());
+                );
 
         return http.build();
     }
@@ -79,6 +77,8 @@ public class SecurityConfig {
         configuration.addAllowedOrigin("http://localhost:3000"); // Frontend local
         configuration.addAllowedOrigin("http://127.0.0.1:5500"); // Live Server
         configuration.addAllowedOrigin("http://localhost:5500"); // Live Server alternativo
+        configuration.addAllowedOrigin("http://127.0.0.1:8080"); // Acesso local
+        configuration.addAllowedOrigin("null"); // Arquivo local aberto diretamente
         configuration.addAllowedMethod("*"); // Permite todos os métodos
         configuration.addAllowedHeader("*"); // Permite todos os headers
         configuration.setAllowCredentials(true); // Permite credenciais

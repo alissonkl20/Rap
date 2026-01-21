@@ -3,12 +3,15 @@ package com.MoveRap.demo.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "user_page", indexes = {
+    @Index(name = "idx_user_id", columnList = "user_id")
+})
 public class UserPage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserModel user;
     
