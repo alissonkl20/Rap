@@ -38,7 +38,7 @@ public class AuthController {
     public ResponseEntity<?> loginUser(@Valid @RequestBody UserLoginDto userLoginDto) {
         try {
             if (userLoginDto.getEmail() == null || userLoginDto.getEmail().isEmpty() ||
-                userLoginDto.getSenha() == null || userLoginDto.getSenha().isEmpty()) {
+                userLoginDto.getPassword() == null || userLoginDto.getPassword().isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ErrorResponse("Email e senha são obrigatórios"));
             }

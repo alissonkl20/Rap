@@ -48,7 +48,7 @@ public class AuthService {
         return null;
     }
     public UserDetalhamentoDto loginUser(UserLoginDto userLoginDto) {
-        return authenticateUser(userLoginDto.getEmail(), userLoginDto.getSenha());
+        return authenticateUser(userLoginDto.getEmail(), userLoginDto.getPassword());
     }
     public UserDetalhamentoDto getUserDetailsByUsername(String username) {
         UserModel user = userRepository.findByUsername(username);
