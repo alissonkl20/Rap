@@ -45,11 +45,49 @@ function setupEventListeners() {
     // Adicionar música
     document.getElementById('add-music-url').addEventListener('click', addMusicUrlInput);
 
+    // Preview de imagens
+    document.getElementById('profileImage').addEventListener('change', (e) => {
+        previewImage(e.target, 'profileImagePreview');
+    });
+    
+    document.getElementById('backgroundImage').addEventListener('change', (e) => {
+        previewImage(e.target, 'backgroundImagePreview');
+    });
+
     // Contador de caracteres da biografia
     document.getElementById('biography').addEventListener('input', (e) => {
         const count = e.target.value.length;
         document.querySelector('.char-count').textContent = `${count}/1000`;
     });
+}
+
+// Upload de imagem
+async function uploadImage(file, type) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('type', type);
+
+    try {
+        const response = await fetch(`${API_URL}/api/upload/image`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Basic ${authCredentials}`
+            },
+            credentials: 'include',
+            body: formData
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return `${API_URL}${data.url}`;
+        } else {
+            const error = await response.json();
+            throw new Error(error.message || 'Erro ao fazer upload da imagem');
+        }
+    } catch (error) {
+        console.error('Erro no upload:', error);
+        throw error;
+    }
 }
 
 // Alternar entre abas
@@ -144,9 +182,9 @@ function displayUserPage() {
                  onerror="this.style.background='linear-gradient(135deg, #667eea 0%, #764ba2 100%)'"
                  style="${!userPage.backgroundImageUrl ? 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : ''}">
             <div class="page-header">
-                <img src="${userPage.profileImageUrl || 'https://via.placeholder.com/120'}" 
+                <img src="${userPage.profileImageUrl || 'https://placehold.co/120'}" 
                      class="profile-image"
-                     onerror="this.src='https://via.placeholder.com/120'">
+                     onerror="this.src='https://placehold.co/120'">
                 <h2>${currentUser.username}</h2>
                 ${userPage.biography ? `<div class="page-biography">${userPage.biography}</div>` : ''}
             </div>
@@ -160,8 +198,14 @@ function populateEditForm() {
     if (!userPage) return;
 
     document.getElementById('biography').value = userPage.biography || '';
-    document.getElementById('profileImageUrl').value = userPage.profileImageUrl || '';
-    document.getElementById('backgroundImageUrl').value = userPage.backgroundImageUrl || '';
+
+    // Mostrar imagens atuais se existirem
+    if (userPage.profileImageUrl) {
+        showExistingImage('profileImagePreview', userPage.profileImageUrl, 'profile');
+    }
+    if (userPage.backgroundImageUrl) {
+        showExistingImage('backgroundImagePreview', userPage.backgroundImageUrl, 'background');
+    }
 
     // Atualizar contador de caracteres
     const count = (userPage.biography || '').length;
@@ -176,6 +220,69 @@ function populateEditForm() {
     musicUrls.forEach(url => {
         addMusicUrlInput(url);
     });
+}
+
+// Mostrar imagem existente
+function showExistingImage(previewId, imageUrl, type) {
+    const preview = document.getElementById(previewId);
+    preview.innerHTML = `
+        <img src="${imageUrl}" alt="Preview">
+        <button type="button" class="remove-image" onclick="removeExistingImage('${previewId}', '${type}')">×</button>
+    `;
+    preview.classList.add('active');
+}
+
+// Remover imagem existente
+function removeExistingImage(previewId, type) {
+    const preview = document.getElementById(previewId);
+    preview.innerHTML = '';
+    preview.classList.remove('active');
+    
+    if (type === 'profile') {
+        userPage.profileImageUrl = null;
+    } else if (type === 'background') {
+        userPage.backgroundImageUrl = null;
+    }
+}
+
+// Preview de imagem antes do upload
+function previewImage(input, previewId) {
+    const preview = document.getElementById(previewId);
+    const file = input.files[0];
+    
+    if (file) {
+        // Validar tamanho
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Arquivo muito grande. Máximo: 5MB');
+            input.value = '';
+            return;
+        }
+        
+        // Validar tipo
+        if (!file.type.startsWith('image/')) {
+            alert('Por favor, selecione apenas arquivos de imagem');
+            input.value = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML = `
+                <img src="${e.target.result}" alt="Preview">
+                <button type="button" class="remove-image" onclick="removeImagePreview('${input.id}', '${previewId}')">×</button>
+            `;
+            preview.classList.add('active');
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Remover preview de imagem
+function removeImagePreview(inputId, previewId) {
+    document.getElementById(inputId).value = '';
+    const preview = document.getElementById(previewId);
+    preview.innerHTML = '';
+    preview.classList.remove('active');
 }
 
 // Adicionar campo de URL de música
@@ -199,25 +306,47 @@ function removeMusicUrl(button) {
 async function savePage(e) {
     e.preventDefault();
 
-    const biography = document.getElementById('biography').value;
-    const profileImageUrl = document.getElementById('profileImageUrl').value;
-    const backgroundImageUrl = document.getElementById('backgroundImageUrl').value;
-    
-    const musicUrlInputs = document.querySelectorAll('.music-url');
-    const musicUrlsList = Array.from(musicUrlInputs)
-        .map(input => input.value)
-        .filter(url => url.trim() !== '');
-
-    const pageData = {
-        biography,
-        profileImageUrl,
-        backgroundImageUrl,
-        musicUrlsList
-    };
-
     const messageDiv = document.getElementById('page-form-message');
+    messageDiv.textContent = 'Salvando...';
+    messageDiv.className = 'form-message';
 
     try {
+        // Upload de imagens primeiro
+        let profileImageUrl = userPage?.profileImageUrl || '';
+        let backgroundImageUrl = userPage?.backgroundImageUrl || '';
+
+        const profileImageFile = document.getElementById('profileImage').files[0];
+        const backgroundImageFile = document.getElementById('backgroundImage').files[0];
+
+        // Upload da foto de perfil
+        if (profileImageFile) {
+            messageDiv.textContent = 'Enviando foto de perfil...';
+            profileImageUrl = await uploadImage(profileImageFile, 'profile');
+        }
+
+        // Upload da imagem de fundo
+        if (backgroundImageFile) {
+            messageDiv.textContent = 'Enviando imagem de fundo...';
+            backgroundImageUrl = await uploadImage(backgroundImageFile, 'background');
+        }
+
+        // Preparar dados da página
+        const biography = document.getElementById('biography').value;
+        
+        const musicUrlInputs = document.querySelectorAll('.music-url');
+        const musicUrlsList = Array.from(musicUrlInputs)
+            .map(input => input.value)
+            .filter(url => url.trim() !== '');
+
+        const pageData = {
+            biography,
+            profileImageUrl,
+            backgroundImageUrl,
+            musicUrlsList
+        };
+
+        messageDiv.textContent = 'Salvando página...';
+
         const endpoint = userPage && (userPage.biography || userPage.profileImageUrl || userPage.backgroundImageUrl || userPage.musicUrls) 
             ? '/user-page/update' 
             : '/user-page/create';
@@ -237,6 +366,10 @@ async function savePage(e) {
             const data = await response.json();
             messageDiv.textContent = endpoint.includes('update') ? 'Página atualizada com sucesso!' : 'Página criada com sucesso!';
             messageDiv.className = 'form-message success';
+            
+            // Limpar inputs de arquivo
+            document.getElementById('profileImage').value = '';
+            document.getElementById('backgroundImage').value = '';
             
             // Recarregar página
             await loadUserPage();

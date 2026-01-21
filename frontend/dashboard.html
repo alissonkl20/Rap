@@ -58,13 +58,17 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="profileImageUrl">URL da Foto de Perfil</label>
-                        <input type="url" id="profileImageUrl" placeholder="https://exemplo.com/foto.jpg">
+                        <label for="profileImage">Foto de Perfil</label>
+                        <input type="file" id="profileImage" accept="image/*">
+                        <div id="profileImagePreview" class="image-preview"></div>
+                        <small class="form-hint">Formatos: JPG, PNG, GIF, WEBP (máx. 5MB)</small>
                     </div>
 
                     <div class="form-group">
-                        <label for="backgroundImageUrl">URL da Imagem de Fundo</label>
-                        <input type="url" id="backgroundImageUrl" placeholder="https://exemplo.com/fundo.jpg">
+                        <label for="backgroundImage">Imagem de Fundo</label>
+                        <input type="file" id="backgroundImage" accept="image/*">
+                        <div id="backgroundImagePreview" class="image-preview"></div>
+                        <small class="form-hint">Formatos: JPG, PNG, GIF, WEBP (máx. 5MB)</small>
                     </div>
 
                     <div class="form-group">
