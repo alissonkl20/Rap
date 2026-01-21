@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página do Artista - Move Rap</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="user-page.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Sidebar (same as dashboard) -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-microphone"></i>
+                    <h1>Move Rap</h1>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="dashboard.html" class="nav-link">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#profile" class="nav-link">
+                            <i class="fas fa-user"></i>
+                            <span>Meu Perfil</span>
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a href="#my-page" class="nav-link">
+                            <i class="fas fa-star"></i>
+                            <span>Minha Página</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#music" class="nav-link">
+                            <i class="fas fa-music"></i>
+                            <span>Músicas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#community" class="nav-link">
+                            <i class="fas fa-users"></i>
+                            <span>Comunidade</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#settings" class="nav-link">
+                            <i class="fas fa-cog"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-details">
+                        <span class="username" id="sidebar-username">Usuário</span>
+                        <span class="user-role">Rapper</span>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <button class="sidebar-toggle" id="sidebar-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2 class="page-title">Minha Página de Artista</h2>
+                </div>
+                <div class="header-right">
+                    <div class="header-actions">
+                        <button class="btn btn-outline" id="preview-page-btn">
+                            <i class="fas fa-eye"></i>
+                            Visualizar
+                        </button>
+                        <button class="btn btn-primary" id="save-page-btn">
+                            <i class="fas fa-save"></i>
+                            Salvar
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- User Page Content -->
+            <div class="user-page-container">
+                <!-- Live Preview Section -->
+                <section class="preview-section">
+                    <div class="preview-header">
+                        <h3>Visualização da Sua Página</h3>
+                        <span class="preview-note">Esta é a visualização de como sua página aparecerá para outros usuários</span>
+                    </div>
+                    
+                    <!-- Artist Page Preview -->
+                    <div class="artist-page-preview">
+                        <!-- Background Image -->
+                        <div class="page-background" id="preview-background">
+                            <div class="background-overlay"></div>
+                        </div>
+                        
+                        <!-- Profile Section -->
+                        <div class="profile-section">
+                            <div class="profile-image-container">
+                                <img id="preview-profile-image" 
+                                     src="https://via.placeholder.com/150x150?text=Foto" 
+                                     alt="Foto do perfil" 
+                                     class="profile-image">
+                                <button class="image-edit-btn" id="edit-profile-image">
+                                    <i class="fas fa-camera"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="profile-info">
+                                <h1 class="artist-name" id="preview-artist-name">Seu Nome Artístico</h1>
+                                <div class="artist-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-number">1,247</span>
+                                        <span class="stat-label">Seguidores</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-number">89</span>
+                                        <span class="stat-label">Músicas</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-number">15.6K</span>
+                                        <span class="stat-label">Plays</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Biography Section -->
+                        <div class="biography-section">
+                            <h3>Sobre o Artista</h3>
+                            <p id="preview-biography">
+                                Adicione sua biografia aqui. Conte sua história, suas influências, 
+                                sua jornada no rap e o que você quer que seus fãs saibam sobre você.
+                            </p>
+                        </div>
+                        
+                        <!-- Music Section -->
+                        <div class="music-section">
+                            <h3>Músicas</h3>
+                            <div class="music-list" id="preview-music-list">
+                                <div class="music-placeholder">
+                                    <i class="fas fa-music"></i>
+                                    <p>Suas músicas aparecerão aqui quando você adicionar os links</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Edit Form Section -->
+                <section class="edit-section">
+                    <div class="edit-header">
+                        <h3>Editar Página</h3>
+                        <span class="edit-note">Personalize sua página de artista</span>
+                    </div>
+                    
+                    <form id="page-edit-form" class="page-edit-form">
+                        <!-- Profile Image -->
+                        <div class="form-section">
+                            <h4>Imagem de Perfil</h4>
+                            <div class="image-input-group">
+                                <input type="url" 
+                                       id="profile-image-input" 
+                                       placeholder="https://exemplo.com/foto-perfil.jpg"
+                                       class="form-input">
+                                <button type="button" class="btn btn-outline" id="test-profile-image">
+                                    <i class="fas fa-eye"></i>
+                                    Testar
+                                </button>
+                            </div>
+                            <span class="input-help">Cole a URL de uma imagem para usar como foto de perfil</span>
+                        </div>
+                        
+                        <!-- Background Image -->
+                        <div class="form-section">
+                            <h4>Imagem de Fundo</h4>
+                            <div class="image-input-group">
+                                <input type="url" 
+                                       id="background-image-input" 
+                                       placeholder="https://exemplo.com/fundo.jpg"
+                                       class="form-input">
+                                <button type="button" class="btn btn-outline" id="test-background-image">
+                                    <i class="fas fa-eye"></i>
+                                    Testar
+                                </button>
+                            </div>
+                            <span class="input-help">Cole a URL de uma imagem para usar como fundo da página</span>
+                        </div>
+                        
+                        <!-- Biography -->
+                        <div class="form-section">
+                            <h4>Biografia</h4>
+                            <textarea id="biography-input" 
+                                      rows="6" 
+                                      placeholder="Conte sua história como artista. Suas influências, sua jornada no rap, seus objetivos..."
+                                      class="form-textarea"></textarea>
+                            <div class="character-count">
+                                <span id="bio-char-count">0</span>/500 caracteres
+                            </div>
+                        </div>
+                        
+                        <!-- Music URLs -->
+                        <div class="form-section">
+                            <h4>Links das Músicas</h4>
+                            <div class="music-input-container">
+                                <textarea id="music-urls-input" 
+                                          rows="4" 
+                                          placeholder="Cole os links das suas músicas, um por linha:&#10;https://spotify.com/track/sua-musica&#10;https://youtube.com/watch?v=...&#10;https://soundcloud.com/..."
+                                          class="form-textarea"></textarea>
+                                <span class="input-help">
+                                    Adicione links do Spotify, YouTube, SoundCloud ou outras plataformas. Um link por linha.
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-outline" id="reset-form-btn">
+                                <i class="fas fa-undo"></i>
+                                Resetar
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                Salvar Alterações
+                            </button>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Image Preview Modal -->
+    <div id="image-preview-modal" class="modal">
+        <div class="modal-content image-modal-content">
+            <div class="modal-header">
+                <h2>Preview da Imagem</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="image-preview-container">
+                <img id="image-preview" src="" alt="Preview" class="preview-image">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close">Cancelar</button>
+                <button class="btn btn-primary" id="use-image-btn">Usar Esta Imagem</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Container -->
+    <div id="alert-container"></div>
+
+    <script src="script.js"></script>
+    <script src="user-page.js"></script>
+</body>
+</html>

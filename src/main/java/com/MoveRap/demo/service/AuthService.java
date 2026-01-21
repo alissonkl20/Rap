@@ -8,8 +8,12 @@ import com.MoveRap.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Service
 public class AuthService {
@@ -25,8 +29,15 @@ public class AuthService {
         user = userRepository.save(user);
         return new UserDetalhamentoDto(user.getId(), user.getUsername(), user.getEmail());
     }
-    public UserDetalhamentoDto authenticateUser(String email, String password) {
-        UserModel user = userRepository.findByEmail(email);
+    public UserDetalhamentoDto authenticateUser(String emailOrUsername, String password) {
+        // Tenta buscar por email primeiro
+        UserModel user = userRepository.findByEmail(emailOrUsername);
+        
+        // Se não encontrou, tenta buscar por username
+        if (user == null) {
+            user = userRepository.findByUsername(emailOrUsername);
+        }
+        
         if (user != null && passwordEncoder.matches(password, user.getPassword())) {
             return new UserDetalhamentoDto(user.getId(), user.getUsername(), user.getEmail());
         }
@@ -44,7 +55,17 @@ public class AuthService {
     }
     public boolean isAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Authentication: " + authentication);
         return authentication != null && authentication.isAuthenticated();
+    }
+    public UserDetalhamentoDto getAuthenticatedUserDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof User) {
+            User user = (User) authentication.getPrincipal();
+            UserModel userModel = userRepository.findByUsername(user.getUsername());
+            if (userModel != null) {
+                return new UserDetalhamentoDto(userModel.getId(), userModel.getUsername(), userModel.getEmail());
+            }
+        }
+        throw new ResponseStatusException(UNAUTHORIZED, "Usuário não autenticado");
     }
 }

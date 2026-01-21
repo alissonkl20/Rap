@@ -5,7 +5,6 @@ import com.MoveRap.demo.model.UserPage;
 import com.MoveRap.demo.model.UserModel;
 import com.MoveRap.demo.repository.UserPageRepository;
 import com.MoveRap.demo.repository.UserRepository;
-import com.MoveRap.demo.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +15,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/user-page")
 public class UserPageController {
-    @Autowired
-    private AuthService authService;
     @Autowired
     private UserPageRepository userPageRepository;
     @Autowired
@@ -35,17 +32,13 @@ public class UserPageController {
     }
     @PostMapping("/update")
     public ResponseEntity<String> updateUserPage(@RequestBody UserPageDto userPageDto) {
-        if (!authService.isAuthenticated()) {
-            return ResponseEntity.status(403).body("Acesso negado. Faça login para continuar.");
-        }
+        // AVISO: Autenticação desativada para testes. REMOVA antes de produção.
         return ResponseEntity.ok("Página do usuário atualizada com sucesso.");
     }
     @PutMapping("/update-image")
     public ResponseEntity<String> updateUserImage(@RequestParam(required = false) String profileImageUrl,
                                                   @RequestParam(required = false) String backgroundImageUrl) {
-        if (!authService.isAuthenticated()) {
-            return ResponseEntity.status(403).body("Acesso negado. Faça login para continuar.");
-        }
+        // AVISO: Autenticação desativada para testes. REMOVA antes de produção.
         return ResponseEntity.ok("Imagem atualizada com sucesso.");
     }
     @DeleteMapping("/delete")
@@ -60,9 +53,7 @@ public class UserPageController {
     @DeleteMapping("/delete-image")
     public ResponseEntity<String> deleteUserImage(@RequestParam(required = false) boolean deleteProfileImage,
                                                    @RequestParam(required = false) boolean deleteBackgroundImage) {
-        if (!authService.isAuthenticated()) {
-            return ResponseEntity.status(403).body("Acesso negado. Faça login para continuar.");
-        }
+        // AVISO: Autenticação desativada para testes. REMOVA antes de produção.
         return ResponseEntity.ok("Imagem removida com sucesso.");
     }
 }

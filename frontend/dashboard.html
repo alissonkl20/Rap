@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Move Rap</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-microphone"></i>
+                    <h1>Move Rap</h1>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <li class="nav-item active">
+                        <a href="#dashboard" class="nav-link">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#profile" class="nav-link">
+                            <i class="fas fa-user"></i>
+                            <span>Meu Perfil</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#my-page" class="nav-link">
+                            <i class="fas fa-star"></i>
+                            <span>Minha Página</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#music" class="nav-link">
+                            <i class="fas fa-music"></i>
+                            <span>Músicas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#community" class="nav-link">
+                            <i class="fas fa-users"></i>
+                            <span>Comunidade</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#settings" class="nav-link">
+                            <i class="fas fa-cog"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-details">
+                        <span class="username" id="sidebar-username">Usuário</span>
+                        <span class="user-role">Rapper</span>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <button class="sidebar-toggle" id="sidebar-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2 class="page-title">Dashboard</h2>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Buscar rappers, músicas..." id="search-input">
+                    </div>
+                    <div class="header-actions">
+                        <button class="action-btn notification-btn" id="notifications-btn">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge">3</span>
+                        </button>
+                        <div class="user-menu">
+                            <button class="user-menu-toggle" id="user-menu-toggle">
+                                <img src="https://via.placeholder.com/40x40?text=U" alt="User" class="user-avatar">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="user-menu-dropdown" id="user-menu-dropdown">
+                                <a href="#profile" class="menu-item">
+                                    <i class="fas fa-user"></i>
+                                    Perfil
+                                </a>
+                                <a href="#settings" class="menu-item">
+                                    <i class="fas fa-cog"></i>
+                                    Configurações
+                                </a>
+                                <hr class="menu-divider">
+                                <button class="menu-item logout-item" id="header-logout">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    Sair
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Welcome Section -->
+                <section class="welcome-section">
+                    <div class="welcome-content">
+                        <h1 class="welcome-title">
+                            Bem-vindo de volta, <span id="welcome-username">Rapper</span>!
+                        </h1>
+                        <p class="welcome-subtitle">
+                            Pronto para fazer seu som voar? Vamos criar algo incrível hoje.
+                        </p>
+                    </div>
+                    <div class="welcome-actions">
+                        <button class="btn btn-primary" id="create-page-btn">
+                            <i class="fas fa-plus"></i>
+                            Criar Página
+                        </button>
+                        <button class="btn btn-outline" id="upload-music-btn">
+                            <i class="fas fa-upload"></i>
+                            Upload de Música
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Stats Cards -->
+                <section class="stats-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3 class="stat-number">1,247</h3>
+                                <p class="stat-label">Visualizações</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3 class="stat-number">89</h3>
+                                <p class="stat-label">Likes</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3 class="stat-number">156</h3>
+                                <p class="stat-label">Seguidores</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-music"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3 class="stat-number">12</h3>
+                                <p class="stat-label">Músicas</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quick Actions -->
+                <section class="quick-actions-section">
+                    <h3 class="section-title">Ações Rápidas</h3>
+                    <div class="quick-actions-grid">
+                        <button class="quick-action-card" id="edit-profile-btn">
+                            <i class="fas fa-edit"></i>
+                            <h4>Editar Perfil</h4>
+                            <p>Atualize suas informações pessoais</p>
+                        </button>
+                        <button class="quick-action-card" id="manage-page-btn">
+                            <i class="fas fa-star"></i>
+                            <h4>Gerenciar Página</h4>
+                            <p>Customize sua página de artista</p>
+                        </button>
+                        <button class="quick-action-card" id="add-music-btn">
+                            <i class="fas fa-plus-circle"></i>
+                            <h4>Adicionar Música</h4>
+                            <p>Compartilhe seu novo trabalho</p>
+                        </button>
+                        <button class="quick-action-card" id="view-analytics-btn">
+                            <i class="fas fa-chart-line"></i>
+                            <h4>Ver Analytics</h4>
+                            <p>Acompanhe seu desempenho</p>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Recent Activity -->
+                <section class="activity-section">
+                    <h3 class="section-title">Atividade Recente</h3>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-heart text-red"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p><strong>MC João</strong> curtiu sua música "Flow do Momento"</p>
+                                <span class="activity-time">Há 2 horas</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-user-plus text-blue"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p><strong>DJ Carlos</strong> começou a te seguir</p>
+                                <span class="activity-time">Há 4 horas</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-comment text-green"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p><strong>Rapper Ana</strong> comentou: "Som sensacional!"</p>
+                                <span class="activity-time">Há 1 dia</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-play text-orange"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p>Sua música "Rimas da Vida" alcançou 1000 reproduções!</p>
+                                <span class="activity-time">Há 2 dias</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create User Page Modal -->
+    <div id="create-page-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Criar Página de Artista</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="create-page-form" class="form">
+                <div class="form-group">
+                    <label for="biography">Biografia</label>
+                    <textarea id="biography" rows="4" placeholder="Conte sua história como artista..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="profile-image-url">URL da Foto de Perfil</label>
+                    <input type="url" id="profile-image-url" placeholder="https://exemplo.com/foto.jpg">
+                </div>
+                <div class="form-group">
+                    <label for="background-image-url">URL da Imagem de Fundo</label>
+                    <input type="url" id="background-image-url" placeholder="https://exemplo.com/fundo.jpg">
+                </div>
+                <div class="form-group">
+                    <label for="music-urls">URLs das Músicas (separadas por vírgula)</label>
+                    <textarea id="music-urls" rows="3" placeholder="https://spotify.com/track1, https://youtube.com/watch?v=..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">
+                    <i class="fas fa-save"></i>
+                    Criar Página
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Alert Container -->
+    <div id="alert-container"></div>
+
+    <script src="script.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>

@@ -2,6 +2,7 @@ package com.MoveRap.demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,7 +11,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.http.HttpMethod;
 
 @Configuration
 @EnableWebSecurity
@@ -24,14 +24,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**").permitAll() // Permitir acesso público aos endpoints de autenticação
-                .requestMatchers(HttpMethod.POST, "/user-page/update").permitAll()
-                .requestMatchers("/user-page/**").authenticated() // Apenas usuários autenticados podem acessar os endpoints de user-page
-                .requestMatchers("/auth/me").authenticated() // Apenas usuários autenticados podem acessar suas informações
+                .requestMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated()
-            );
+            )
+            .httpBasic(Customizer.withDefaults()); // Adiciona suporte a autenticação básica
 
         return http.build();
     }
@@ -39,9 +38,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("*");
-        configuration.addAllowedMethod("*");
-        configuration.addAllowedHeader("*");
+        configuration.addAllowedOrigin("http://localhost:3000"); // Frontend local
+        configuration.addAllowedMethod("*"); // Permite todos os métodos
+        configuration.addAllowedHeader("*"); // Permite todos os headers
+        configuration.setAllowCredentials(true); // Permite credenciais
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
