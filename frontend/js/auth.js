@@ -50,6 +50,9 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             const data = await response.json();
             // Salva os dados do usuário
             localStorage.setItem('user', JSON.stringify(data));
+            // Salva as credenciais de autenticação
+            const credentials = btoa(`${email}:${password}`);
+            localStorage.setItem('authCredentials', credentials);
             window.location.href = 'dashboard.html';
         } else {
             const data = await response.json().catch(() => ({ message: 'Erro ao fazer login' }));

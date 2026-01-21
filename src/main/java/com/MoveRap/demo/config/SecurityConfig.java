@@ -53,6 +53,7 @@ public class SecurityConfig {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
+            .httpBasic(httpBasic -> {}) // Habilita HTTP Basic Authentication
             .authorizeHttpRequests(auth -> auth
                     // Permitir rotas públicas
                     .requestMatchers("/", "/index", "/index.html").permitAll()
