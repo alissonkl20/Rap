@@ -31,9 +31,11 @@ public class UserPageController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPage);
     }
     @PostMapping("/update")
-    public ResponseEntity<String> updateUserPage(@RequestBody UserPageDto userPageDto) {
+    public ResponseEntity<Object> updateUserPage(@RequestBody UserPageDto userPageDto) {
         // AVISO: Autenticação desativada para testes. REMOVA antes de produção.
-        return ResponseEntity.ok("Página do usuário atualizada com sucesso.");
+        java.util.Map<String, String> response = new java.util.HashMap<>();
+        response.put("message", "Página do usuário atualizada com sucesso.");
+        return ResponseEntity.ok(response);
     }
     @PutMapping("/update-image")
     public ResponseEntity<String> updateUserImage(@RequestParam(required = false) String profileImageUrl,

@@ -39,6 +39,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:3000"); // Frontend local
+        configuration.addAllowedOrigin("http://127.0.0.1:5500"); // Live Server
+        configuration.addAllowedOrigin("http://localhost:5500"); // Live Server alternativo
         configuration.addAllowedMethod("*"); // Permite todos os métodos
         configuration.addAllowedHeader("*"); // Permite todos os headers
         configuration.setAllowCredentials(true); // Permite credenciais

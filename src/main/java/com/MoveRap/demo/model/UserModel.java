@@ -14,6 +14,9 @@ public class UserModel {
     private String email;
     @Column(nullable = false)
     private String password;
+    
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserPage userPage;
     public UserModel() {
     }
 
@@ -46,5 +49,11 @@ public class UserModel {
     }
     public void setPassword(String password) {
         this.password = password;
+    }
+    public UserPage getUserPage() {
+        return userPage;
+    }
+    public void setUserPage(UserPage userPage) {
+        this.userPage = userPage;
     }
 }

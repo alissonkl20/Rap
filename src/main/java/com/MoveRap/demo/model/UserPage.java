@@ -12,6 +12,11 @@ public class UserPage {
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserModel user;
+    
+    @PreRemove
+    private void preRemove() {
+        user = null;
+    }
     private String biography;
     private String profileImageUrl;
     private String backgroundImageUrl;
