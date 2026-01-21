@@ -438,38 +438,26 @@ function handlePreviewPage() {
     // This would open the page in a new tab/window for full preview
 }
 
-function loadExistingPageData() {
-    // This would load existing user page data from the API
-    // For now, we'll just use placeholder data
-    console.log('Loading existing page data...');
-    
-    // Simulate loading some data
-    const existingData = {
-        biography: '',
-        profileImageUrl: '',
-        backgroundImageUrl: '',
-        musicUrls: ''
-    };
-    
-    // Populate form with existing data
-    if (existingData.biography) {
-        document.getElementById('biography-input').value = existingData.biography;
-        handleBiographyChange({ target: { value: existingData.biography } });
-    }
-    
-    if (existingData.profileImageUrl) {
-        document.getElementById('profile-image-input').value = existingData.profileImageUrl;
-        handleProfileImageChange({ target: { value: existingData.profileImageUrl } });
-    }
-    
-    if (existingData.backgroundImageUrl) {
-        document.getElementById('background-image-input').value = existingData.backgroundImageUrl;
-        handleBackgroundImageChange({ target: { value: existingData.backgroundImageUrl } });
-    }
-    
-    if (existingData.musicUrls) {
-        document.getElementById('music-urls-input').value = existingData.musicUrls;
-        handleMusicUrlsChange({ target: { value: existingData.musicUrls } });
+async function loadExistingPageData() {
+    try {
+        const data = await window.MoveRap.ApiClient.get('/user-page/me', {
+            credentials: 'include'
+        });
+        if (data) {
+            document.getElementById('biography-input').value = data.biography || '';
+            handleBiographyChange({ target: { value: data.biography || '' } });
+
+            document.getElementById('profile-image-input').value = data.profileImageUrl || '';
+            handleProfileImageChange({ target: { value: data.profileImageUrl || '' } });
+
+            document.getElementById('background-image-input').value = data.backgroundImageUrl || '';
+            handleBackgroundImageChange({ target: { value: data.backgroundImageUrl || '' } });
+
+            document.getElementById('music-urls-input').value = data.musicUrls || '';
+            handleMusicUrlsChange({ target: { value: data.musicUrls || '' } });
+        }
+    } catch (error) {
+        console.error('Erro ao carregar dados da página:', error);
     }
 }
 

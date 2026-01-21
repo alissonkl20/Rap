@@ -3,9 +3,9 @@ services:
   db:
     image: postgres:15
     environment:
-      POSTGRES_DB: rapnat
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Alissonkiss@12
+      POSTGRES_DB: ${DB_NAME:-rapnat}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-Alissonkiss@12}
     ports:
       - "5432:5432"
     networks:
@@ -18,14 +18,12 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=default
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/rapnat
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=Alissonkiss@12
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${DB_NAME:-rapnat}
+      - SPRING_DATASOURCE_USERNAME=${DB_USER:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-Alissonkiss@12}
     depends_on:
       - db
     restart: unless-stopped
-    volumes:
-      - ./.env:/app/.env
     networks:
       - moverap-net
 

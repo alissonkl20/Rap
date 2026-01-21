@@ -29,6 +29,7 @@ class ApiClient {
                     'Content-Type': 'application/json',
                     ...options.headers
                 },
+                credentials: 'include', // Adicione isto para enviar cookies
                 ...options
             };
 

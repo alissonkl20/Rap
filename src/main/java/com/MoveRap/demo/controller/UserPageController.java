@@ -5,57 +5,128 @@ import com.MoveRap.demo.model.UserPage;
 import com.MoveRap.demo.model.UserModel;
 import com.MoveRap.demo.repository.UserPageRepository;
 import com.MoveRap.demo.repository.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.security.core.Authentication;
+
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/user-page")
+@RequestMapping("/user-page") // Corrigindo o padrão de rota
 public class UserPageController {
     @Autowired
     private UserPageRepository userPageRepository;
     @Autowired
     private UserRepository userRepository;
     @PostMapping("/create")
-    public ResponseEntity<UserPage> createUserPage(@RequestParam Long userId,
-                                                   @RequestBody UserPage userPage) {
-        Optional<UserModel> user = userRepository.findById(userId);
-        if (user.isEmpty()) {
+    public ResponseEntity<UserPage> createUserPage(@Valid @RequestBody UserPageDto userPageDto, 
+                                                   Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Não autenticado");
+        }
+        
+        String username = authentication.getName();
+        UserModel user = userRepository.findByUsername(username);
+        if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
         }
-        userPage.setUser(user.get());
+        
+        // Verifica se já existe uma página para este usuário
+        Optional<UserPage> existingPage = userPageRepository.findByUserId(user.getId());
+        if (existingPage.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Usuário já possui uma página");
+        }
+        
+        UserPage userPage = new UserPage();
+        userPage.setUser(user);
+        userPage.setBiography(userPageDto.getBiography());
+        userPage.setProfileImageUrl(userPageDto.getProfileImageUrl());
+        userPage.setBackgroundImageUrl(userPageDto.getBackgroundImageUrl());
+        // Converte lista de URLs em string separada por vírgula
+        if (userPageDto.getMusicUrlsList() != null && !userPageDto.getMusicUrlsList().isEmpty()) {
+            userPage.setMusicUrls(String.join(",", userPageDto.getMusicUrlsList()));
+        }
+        
         UserPage savedPage = userPageRepository.save(userPage);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPage);
     }
-    @PostMapping("/update")
-    public ResponseEntity<Object> updateUserPage(@RequestBody UserPageDto userPageDto) {
-        // AVISO: Autenticação desativada para testes. REMOVA antes de produção.
+    @PutMapping("/update")
+    public ResponseEntity<Object> updateUserPage(@Valid @RequestBody UserPageDto userPageDto, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Não autenticado");
+        }
+        String username = authentication.getName();
+        UserModel user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
+        }
+        UserPage userPage = userPageRepository.findByUserId(user.getId()).orElse(new UserPage());
+        userPage.setUser(user);
+        userPage.setBiography(userPageDto.getBiography());
+        userPage.setProfileImageUrl(userPageDto.getProfileImageUrl());
+        userPage.setBackgroundImageUrl(userPageDto.getBackgroundImageUrl());
+        // Converte lista de URLs em string separada por vírgula
+        if (userPageDto.getMusicUrlsList() != null && !userPageDto.getMusicUrlsList().isEmpty()) {
+            userPage.setMusicUrls(String.join(",", userPageDto.getMusicUrlsList()));
+        }
+        userPageRepository.save(userPage);
         java.util.Map<String, String> response = new java.util.HashMap<>();
         response.put("message", "Página do usuário atualizada com sucesso.");
         return ResponseEntity.ok(response);
     }
-    @PutMapping("/update-image")
-    public ResponseEntity<String> updateUserImage(@RequestParam(required = false) String profileImageUrl,
-                                                  @RequestParam(required = false) String backgroundImageUrl) {
-        // AVISO: Autenticação desativada para testes. REMOVA antes de produção.
-        return ResponseEntity.ok("Imagem atualizada com sucesso.");
-    }
+
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteUserPage(@RequestParam Long userId) {
-        Optional<UserPage> existingPage = userPageRepository.findByUserId(userId);
+    public ResponseEntity<String> deleteUserPage(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Não autenticado");
+        }
+        
+        String username = authentication.getName();
+        UserModel user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
+        }
+        
+        Optional<UserPage> existingPage = userPageRepository.findByUserId(user.getId());
         if (existingPage.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Página do usuário não encontrada");
         }
+        
         userPageRepository.delete(existingPage.get());
         return ResponseEntity.ok("Página do usuário excluída com sucesso.");
     }
-    @DeleteMapping("/delete-image")
-    public ResponseEntity<String> deleteUserImage(@RequestParam(required = false) boolean deleteProfileImage,
-                                                   @RequestParam(required = false) boolean deleteBackgroundImage) {
-        // AVISO: Autenticação desativada para testes. REMOVA antes de produção.
-        return ResponseEntity.ok("Imagem removida com sucesso.");
+
+    @GetMapping("/me")
+    public ResponseEntity<UserPageDto> getMyUserPage(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Não autenticado");
+        }
+        String username = authentication.getName();
+        UserModel user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
+        }
+        Optional<UserPage> userPageOpt = userPageRepository.findByUserId(user.getId());
+        if (userPageOpt.isEmpty()) {
+            return ResponseEntity.ok(new UserPageDto()); // Retorna vazio se não existir
+        }
+        UserPage page = userPageOpt.get();
+        UserPageDto dto = new UserPageDto();
+        dto.setBiography(page.getBiography());
+        dto.setProfileImageUrl(page.getProfileImageUrl());
+        dto.setBackgroundImageUrl(page.getBackgroundImageUrl());
+        // Converte string em lista de URLs
+        if (page.getMusicUrls() != null && !page.getMusicUrls().isEmpty()) {
+            dto.setMusicUrlsList(java.util.Arrays.asList(page.getMusicUrls().split(",")));
+        }
+        return ResponseEntity.ok(dto);
+    }
+    @GetMapping
+    public String serveUserPage() {
+        return "user-page"; // Nome do arquivo HTML sem extensão
     }
 }

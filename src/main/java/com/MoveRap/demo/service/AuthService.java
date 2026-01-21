@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Service
@@ -30,16 +29,21 @@ public class AuthService {
         return new UserDetalhamentoDto(user.getId(), user.getUsername(), user.getEmail());
     }
     public UserDetalhamentoDto authenticateUser(String emailOrUsername, String password) {
-        // Tenta buscar por email primeiro
+        System.out.println("Autenticando usuário com email/username: " + emailOrUsername);
         UserModel user = userRepository.findByEmail(emailOrUsername);
-        
-        // Se não encontrou, tenta buscar por username
         if (user == null) {
             user = userRepository.findByUsername(emailOrUsername);
         }
-        
-        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-            return new UserDetalhamentoDto(user.getId(), user.getUsername(), user.getEmail());
+        if (user != null) {
+            System.out.println("Usuário encontrado: " + user.getUsername());
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                System.out.println("Senha válida para o usuário: " + user.getUsername());
+                return new UserDetalhamentoDto(user.getId(), user.getUsername(), user.getEmail());
+            } else {
+                System.out.println("Senha inválida para o usuário: " + user.getUsername());
+            }
+        } else {
+            System.out.println("Usuário não encontrado para o email/username: " + emailOrUsername);
         }
         return null;
     }
