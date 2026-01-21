@@ -159,14 +159,12 @@ class AuthService {
                 email: credentials.username,
                 senha: credentials.password
             });
-            
             AppState.currentUser = response;
             AppState.isLoggedIn = true;
-            
-            // Store user info in localStorage
             localStorage.setItem('user', JSON.stringify(response));
             localStorage.setItem('isLoggedIn', 'true');
-            
+            // Redireciona para user-page.html após login
+            window.location.href = 'user-page.html';
             return response;
         } catch (error) {
             throw new Error(error.message || 'Erro ao fazer login');
@@ -180,7 +178,8 @@ class AuthService {
                 email: userData.email,
                 password: userData.password
             });
-            
+            // Após cadastro, faz login automático e redireciona para user-page.html
+            await AuthService.login({ username: userData.email, password: userData.password });
             return response;
         } catch (error) {
             throw new Error(error.message || 'Erro ao criar conta');
@@ -271,65 +270,9 @@ class UserPageService {
 
 // Page Navigation
 class PageManager {
-    static async showDashboard() {
-        // Hide landing page (only if exists)
-        if (elements.landingPage) {
-            elements.landingPage.style.display = 'none';
-        }
-        
-        // Load dashboard page
-        await this.loadPage('dashboard.html');
-    }
-
-    static async showProfile() {
-        await this.loadPage('profile.html');
-    }
-
+    // Todas as funções relacionadas a dashboard removidas
     static async showUserPage() {
-        await this.loadPage('user-page.html');
-    }
-
-    static async loadPage(filename) {
-        try {
-            const response = await fetch(filename);
-            const html = await response.text();
-            
-            document.body.innerHTML = html;
-            
-            // Reload CSS and scripts for the new page
-            this.loadPageAssets(filename);
-            
-        } catch (error) {
-            console.error('Error loading page:', error);
-            AlertSystem.error('Erro ao carregar página');
-        }
-    }
-
-    static loadPageAssets(filename) {
-        // This would load page-specific CSS and JS
-        // For now, we'll handle this in each page's onload
-        if (filename === 'dashboard.html') {
-            this.initDashboard();
-        } else if (filename === 'profile.html') {
-            this.initProfile();
-        } else if (filename === 'user-page.html') {
-            this.initUserPage();
-        }
-    }
-
-    static initDashboard() {
-        console.log('Initializing dashboard...');
-        // Dashboard-specific initialization
-    }
-
-    static initProfile() {
-        console.log('Initializing profile...');
-        // Profile-specific initialization
-    }
-
-    static initUserPage() {
-        console.log('Initializing user page...');
-        // User page-specific initialization
+        window.location.href = 'user-page.html';
     }
 }
 
@@ -538,11 +481,11 @@ async function initApp() {
         elements.loading?.classList.add('hidden');
     }, 1500);
     
-    // If user is logged in, redirect to dashboard
+    // Se já estiver autenticado, redireciona para user-page.html
     if (isAuthenticated) {
         setTimeout(() => {
-            PageManager.showDashboard();
-        }, 2000);
+            window.location.href = 'user-page.html';
+        }, 1000);
     }
     
     console.log('App initialized successfully');

@@ -1,4 +1,41 @@
+/* Oculta textos solicitados pelo usuário */
+.sidebar-nav .nav-link span,
+.user-details .username,
+.user-details .user-role,
+.page-title,
+#preview-page-btn span,
+#save-page-btn span,
+.header-actions .btn span {
+    display: none !important;
+}
 /* User Page Specific Styles */
+
+/* Sidebar ajustada para apenas Configurações */
+.sidebar-nav .nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+    margin: 0;
+}
+.sidebar-nav .nav-item {
+    margin-bottom: 0;
+}
+.sidebar-nav .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    transition: background 0.2s, color 0.2s;
+}
+.sidebar-nav .nav-link:hover,
+.sidebar-nav .nav-item.active .nav-link {
+    background: var(--primary-color);
+    color: #fff;
+}
 
 .user-page-container {
     display: grid;
@@ -418,10 +455,13 @@
         grid-template-columns: 1fr;
         gap: 20px;
     }
-    
     .edit-section {
         position: relative;
         top: 0;
+    }
+    .sidebar {
+        min-width: 0;
+        width: 100%;
     }
 }
 
