@@ -55,13 +55,16 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/auth/register", "/auth/login", "/index", "/", "/index.html", 
-                                     "/static/**", "/css/**", "/scripts/**", 
-                                     "/favicon.ico", "/static/css/**", "/static/scripts/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/user-page/**").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/**").authenticated()
-                    .requestMatchers(HttpMethod.PUT, "/**").authenticated()
-                    .requestMatchers(HttpMethod.DELETE, "/**").authenticated()
+                    // Permitir rotas públicas
+                    .requestMatchers("/", "/index", "/index.html").permitAll()
+                    .requestMatchers("/auth/register", "/auth/login").permitAll()
+                    .requestMatchers("/css/**", "/scripts/**", "/static/**").permitAll()
+                    .requestMatchers("/favicon.ico").permitAll()
+                    // User-page GET é público para visualização
+                    .requestMatchers(HttpMethod.GET, "/user-page").permitAll()
+                    // Endpoints de API da user-page requerem autenticação
+                    .requestMatchers("/user-page/**").authenticated()
+                    // Qualquer outra requisição requer autenticação
                     .anyRequest().authenticated()
                 )
             .httpBasic(Customizer.withDefaults());
@@ -72,6 +75,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:8080"); // Spring Boot
         configuration.addAllowedOrigin("http://localhost:3000"); // Frontend local
         configuration.addAllowedOrigin("http://127.0.0.1:5500"); // Live Server
         configuration.addAllowedOrigin("http://localhost:5500"); // Live Server alternativo

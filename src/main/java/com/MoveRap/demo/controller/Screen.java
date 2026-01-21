@@ -14,4 +14,9 @@ public class Screen {
     public String index() {
         return "index";
     }
+    
+    @GetMapping("/user-page")
+    public String userPage() {
+        return "user-page";
+    }
 }

@@ -239,7 +239,7 @@ class UserPageService {
 
     static async updateUserPage(pageData) {
         try {
-            const response = await ApiClient.post('/user-page/update', pageData);
+            const response = await ApiClient.put('/user-page/update', pageData);
             return response;
         } catch (error) {
             throw new Error(error.message || 'Erro ao atualizar página');

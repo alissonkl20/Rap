@@ -403,11 +403,16 @@ async function handleSavePage() {
         }
         
         // Prepare data
+        const musicUrls = UserPageState.currentData.musicUrls || '';
+        const musicUrlsList = musicUrls.split('\n')
+            .map(url => url.trim())
+            .filter(url => url.length > 0);
+        
         const pageData = {
             biography: UserPageState.currentData.biography || '',
             profileImageUrl: UserPageState.currentData.profileImageUrl || '',
             backgroundImageUrl: UserPageState.currentData.backgroundImageUrl || '',
-            musicUrls: UserPageState.currentData.musicUrls || ''
+            musicUrlsList: musicUrlsList
         };
         
         console.log('Saving user page:', pageData);
@@ -453,8 +458,12 @@ async function loadExistingPageData() {
             document.getElementById('background-image-input').value = data.backgroundImageUrl || '';
             handleBackgroundImageChange({ target: { value: data.backgroundImageUrl || '' } });
 
-            document.getElementById('music-urls-input').value = data.musicUrls || '';
-            handleMusicUrlsChange({ target: { value: data.musicUrls || '' } });
+            // Converter array de URLs em string separada por linhas
+            const musicUrlsString = data.musicUrlsList && data.musicUrlsList.length > 0 
+                ? data.musicUrlsList.join('\n') 
+                : '';
+            document.getElementById('music-urls-input').value = musicUrlsString;
+            handleMusicUrlsChange({ target: { value: musicUrlsString } });
         }
     } catch (error) {
         console.error('Erro ao carregar dados da página:', error);

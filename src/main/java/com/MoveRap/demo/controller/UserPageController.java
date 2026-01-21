@@ -125,8 +125,4 @@ public class UserPageController {
         }
         return ResponseEntity.ok(dto);
     }
-    @GetMapping
-    public String serveUserPage() {
-        return "user-page"; // Nome do arquivo HTML sem extensão
-    }
 }

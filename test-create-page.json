@@ -1,0 +1,10 @@
+{
+  "biography": "MC de São Paulo, representando o RAP nacional!",
+  "profileImageUrl": "https://example.com/foto-perfil.jpg",
+  "backgroundImageUrl": "https://example.com/fundo.jpg",
+  "musicUrlsList": [
+    "https://open.spotify.com/track/123",
+    "https://www.youtube.com/watch?v=456",
+    "https://soundcloud.com/track/789"
+  ]
+}
