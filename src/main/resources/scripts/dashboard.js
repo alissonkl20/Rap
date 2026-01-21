@@ -59,16 +59,16 @@ function initDashboardEventListeners() {
     // Quick action buttons
     document.getElementById('create-page-btn')?.addEventListener('click', showCreatePageModal);
     document.getElementById('edit-profile-btn')?.addEventListener('click', () => {
-        window.MoveRap.AlertSystem.info('Funcionalidade em desenvolvimento');
+        window.MoveRap.PageManager.showProfile();
     });
     document.getElementById('manage-page-btn')?.addEventListener('click', () => {
-        window.MoveRap.AlertSystem.info('Funcionalidade em desenvolvimento');
+        window.MoveRap.PageManager.showUserPage();
     });
     document.getElementById('add-music-btn')?.addEventListener('click', () => {
-        window.MoveRap.AlertSystem.info('Funcionalidade em desenvolvimento');
+        window.MoveRap.AlertSystem.info('Funcionalidade de adicionar música em breve!');
     });
     document.getElementById('view-analytics-btn')?.addEventListener('click', () => {
-        window.MoveRap.AlertSystem.info('Funcionalidade em desenvolvimento');
+        window.MoveRap.AlertSystem.info('Funcionalidade de analytics em breve!');
     });
     
     // Create page form
@@ -148,37 +148,32 @@ function handleLogout() {
 
 function handleNavigation(event) {
     event.preventDefault();
-    
     const href = event.currentTarget.getAttribute('href');
     const currentActive = document.querySelector('.nav-item.active');
-    
-    // Remove active class from current item
     if (currentActive) {
         currentActive.classList.remove('active');
     }
-    
-    // Add active class to clicked item
     event.currentTarget.parentElement.classList.add('active');
-    
-    // Handle navigation based on href
+
+    // Navegação real usando PageManager
     switch (href) {
         case '#dashboard':
-            // Already on dashboard, just update active state
+            window.MoveRap.PageManager.showDashboard();
             break;
         case '#profile':
-            window.MoveRap.AlertSystem.info('Carregando perfil...');
+            window.MoveRap.PageManager.showProfile();
             break;
         case '#my-page':
-            window.MoveRap.AlertSystem.info('Carregando página do artista...');
+            window.MoveRap.PageManager.showUserPage();
             break;
         case '#music':
-            window.MoveRap.AlertSystem.info('Carregando suas músicas...');
+            window.MoveRap.AlertSystem.info('Funcionalidade de músicas em breve!');
             break;
         case '#community':
-            window.MoveRap.AlertSystem.info('Carregando comunidade...');
+            window.MoveRap.AlertSystem.info('Funcionalidade de comunidade em breve!');
             break;
         case '#settings':
-            window.MoveRap.AlertSystem.info('Carregando configurações...');
+            window.MoveRap.AlertSystem.info('Funcionalidade de configurações em breve!');
             break;
         default:
             console.log('Unknown navigation:', href);

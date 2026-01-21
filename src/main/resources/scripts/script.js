@@ -272,8 +272,10 @@ class UserPageService {
 // Page Navigation
 class PageManager {
     static async showDashboard() {
-        // Hide landing page
-        elements.landingPage.style.display = 'none';
+        // Hide landing page (only if exists)
+        if (elements.landingPage) {
+            elements.landingPage.style.display = 'none';
+        }
         
         // Load dashboard page
         await this.loadPage('dashboard.html');
