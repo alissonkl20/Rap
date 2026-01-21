@@ -68,7 +68,7 @@ async function uploadImage(file, type) {
     formData.append('type', type);
 
     try {
-        const response = await fetch(`${API_URL}/api/upload/image`, {
+        const response = await fetch(`${API_URL}/api/upload`, {
             method: 'POST',
             headers: {
                 'Authorization': `Basic ${authCredentials}`
@@ -175,14 +175,24 @@ function displayUserPage() {
         `;
     }
 
+    // Garantir que URLs de imagem estejam completas
+    const backgroundImageUrl = userPage.backgroundImageUrl 
+        ? (userPage.backgroundImageUrl.startsWith('http') 
+            ? userPage.backgroundImageUrl 
+            : `${API_URL}${userPage.backgroundImageUrl}`)
+        : '';
+    
+    const profileImageUrl = userPage.profileImageUrl 
+        ? (userPage.profileImageUrl.startsWith('http') 
+            ? userPage.profileImageUrl 
+            : `${API_URL}${userPage.profileImageUrl}`)
+        : 'https://placehold.co/120';
+
     document.getElementById('user-page-preview').innerHTML = `
         <div class="user-page-display">
-            <img src="${userPage.backgroundImageUrl || ''}" 
-                 class="page-background" 
-                 onerror="this.style.background='linear-gradient(135deg, #667eea 0%, #764ba2 100%)'"
-                 style="${!userPage.backgroundImageUrl ? 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : ''}">
+            ${backgroundImageUrl ? `<img src="${backgroundImageUrl}" class="page-background" onerror="this.style.background='linear-gradient(135deg, #667eea 0%, #764ba2 100%)'">` : `<div class="page-background" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)"></div>`}
             <div class="page-header">
-                <img src="${userPage.profileImageUrl || 'https://placehold.co/120'}" 
+                <img src="${profileImageUrl}" 
                      class="profile-image"
                      onerror="this.src='https://placehold.co/120'">
                 <h2>${currentUser.username}</h2>
@@ -225,8 +235,10 @@ function populateEditForm() {
 // Mostrar imagem existente
 function showExistingImage(previewId, imageUrl, type) {
     const preview = document.getElementById(previewId);
+    // Garantir que a URL esteja completa
+    const fullImageUrl = imageUrl.startsWith('http') ? imageUrl : `${API_URL}${imageUrl}`;
     preview.innerHTML = `
-        <img src="${imageUrl}" alt="Preview">
+        <img src="${fullImageUrl}" alt="Preview" onerror="this.src='https://placehold.co/300x200?text=Erro+ao+carregar'">
         <button type="button" class="remove-image" onclick="removeExistingImage('${previewId}', '${type}')">×</button>
     `;
     preview.classList.add('active');

@@ -53,17 +53,12 @@ public class SecurityConfig {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
-            .httpBasic(httpBasic -> {}) // Habilita HTTP Basic Authentication
             .authorizeHttpRequests(auth -> auth
                     // Permitir rotas públicas
                     .requestMatchers("/", "/index", "/index.html").permitAll()
                     .requestMatchers("/auth/register", "/auth/login").permitAll()
                     .requestMatchers("/css/**", "/scripts/**", "/static/**").permitAll()
                     .requestMatchers("/favicon.ico").permitAll()
-                    // Permitir acesso aos uploads (somente GET)
-                    .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
-                    // Upload de imagens requer autenticação (API endpoints)
-                    .requestMatchers("/api/**").authenticated()
                     // User-page GET é público para visualização
                     .requestMatchers(HttpMethod.GET, "/user-page").permitAll()
                     // Endpoints de API da user-page requerem autenticação

@@ -3,58 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoveRap - Login</title>
+    <title>MoveRap - Compartilhe sua música com o mundo</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="form-container">
-            <div class="logo">
-                <h1>🎵 MoveRap</h1>
-                <p>Compartilhe sua música com o mundo</p>
+    <!-- Landing Page -->
+    <div id="landing-page" class="landing-page">
+        <div class="hero-section">
+            <div class="hero-content">
+                <div class="logo-hero animate-fade-in">
+                    <div class="music-icon">🎵</div>
+                    <h1 class="brand-name">Move<span class="highlight">Rap</span></h1>
+                </div>
+                
+                <p class="hero-subtitle animate-slide-up">
+                    Compartilhe sua música com o mundo
+                </p>
+                
+                <div class="features animate-slide-up delay-1">
+                    <div class="feature-card">
+                        <div class="feature-icon">🎤</div>
+                        <h3>Crie sua Página</h3>
+                        <p>Monte seu perfil artístico personalizado</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎧</div>
+                        <h3>Compartilhe</h3>
+                        <p>Divulgue suas músicas e alcance seu público</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔥</div>
+                        <h3>Conecte-se</h3>
+                        <p>Faça parte da comunidade do rap nacional</p>
+                    </div>
+                </div>
+                
+                <div class="cta-buttons animate-slide-up delay-2">
+                    <button class="btn btn-primary btn-large" id="btn-show-register">
+                        Começar Agora
+                    </button>
+                    <button class="btn btn-secondary btn-large" id="btn-show-login">
+                        Já tenho conta
+                    </button>
+                </div>
+                
+                <div class="stats animate-fade-in delay-3">
+                    <div class="stat">
+                        <div class="stat-number">1000+</div>
+                        <div class="stat-label">Artistas</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">5000+</div>
+                        <div class="stat-label">Músicas</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Disponível</div>
+                    </div>
+                </div>
             </div>
             
-            <div id="login-form" class="form-wrapper">
-                <h2>Entrar</h2>
-                <form id="loginForm">
-                    <div class="form-group">
-                        <label for="login-email">Email</label>
-                        <input type="email" id="login-email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="login-password">Senha</label>
-                        <input type="password" id="login-password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Entrar</button>
-                    <div id="login-error" class="error-message"></div>
-                </form>
-                <p class="toggle-form">
-                    Não tem uma conta? <a href="#" id="show-register">Cadastre-se</a>
-                </p>
+            <div class="floating-notes">
+                <div class="note note1">♪</div>
+                <div class="note note2">♫</div>
+                <div class="note note3">♪</div>
+                <div class="note note4">♫</div>
+                <div class="note note5">♪</div>
             </div>
+        </div>
+    </div>
 
-            <div id="register-form" class="form-wrapper" style="display: none;">
-                <h2>Criar Conta</h2>
-                <form id="registerForm">
-                    <div class="form-group">
-                        <label for="register-username">Nome de Usuário</label>
-                        <input type="text" id="register-username" required minlength="3" maxlength="50">
-                    </div>
-                    <div class="form-group">
-                        <label for="register-email">Email</label>
-                        <input type="email" id="register-email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="register-password">Senha</label>
-                        <input type="password" id="register-password" required minlength="6">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Cadastrar</button>
-                    <div id="register-error" class="error-message"></div>
-                </form>
-                <p class="toggle-form">
-                    Já tem uma conta? <a href="#" id="show-login">Faça login</a>
-                </p>
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-login">&times;</span>
+            <div class="form-container">
+                <div class="logo">
+                    <h1>🎵 MoveRap</h1>
+                    <p>Bem-vindo de volta!</p>
+                </div>
+                
+                <div id="login-form" class="form-wrapper">
+                    <h2>Entrar</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Senha</label>
+                            <input type="password" id="login-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Entrar</button>
+                        <div id="login-error" class="error-message"></div>
+                    </form>
+                    <p class="toggle-form">
+                        Não tem uma conta? <a href="#" id="show-register-from-login">Cadastre-se</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-register">&times;</span>
+            <div class="form-container">
+                <div class="logo">
+                    <h1>🎵 MoveRap</h1>
+                    <p>Comece sua jornada musical</p>
+                </div>
+                
+                <div id="register-form" class="form-wrapper">
+                    <h2>Criar Conta</h2>
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="register-username">Nome de Usuário</label>
+                            <input type="text" id="register-username" required minlength="3" maxlength="50">
+                        </div>
+                        <div class="form-group">
+                            <label for="register-email">Email</label>
+                            <input type="email" id="register-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Senha</label>
+                            <input type="password" id="register-password" required minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label for="register-confirm-password">Confirmar Senha</label>
+                            <input type="password" id="register-confirm-password" required minlength="6">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Criar Conta</button>
+                        <div id="register-error" class="error-message"></div>
+                        <div id="register-success" class="success-message"></div>
+                    </form>
+                    <p class="toggle-form">
+                        Já tem uma conta? <a href="#" id="show-login-from-register">Entrar</a>
+                    </p>
+                </div>
             </div>
         </div>
     </div>

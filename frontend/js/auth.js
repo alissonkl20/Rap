@@ -1,16 +1,76 @@
 const API_URL = 'http://localhost:8080';
 
-// Toggle entre login e registro
-document.getElementById('show-register').addEventListener('click', (e) => {
-    e.preventDefault();
-    document.getElementById('login-form').style.display = 'none';
-    document.getElementById('register-form').style.display = 'block';
-});
+// Elementos da Landing Page e Modais
+const landingPage = document.getElementById('landing-page');
+const loginModal = document.getElementById('login-modal');
+const registerModal = document.getElementById('register-modal');
 
-document.getElementById('show-login').addEventListener('click', (e) => {
-    e.preventDefault();
-    document.getElementById('register-form').style.display = 'none';
-    document.getElementById('login-form').style.display = 'block';
+// Botões da landing page
+const btnShowRegister = document.getElementById('btn-show-register');
+const btnShowLogin = document.getElementById('btn-show-login');
+
+// Botões de fechar modais
+const closeLogin = document.getElementById('close-login');
+const closeRegister = document.getElementById('close-register');
+
+// Links para alternar entre login e registro
+const showRegisterFromLogin = document.getElementById('show-register-from-login');
+const showLoginFromRegister = document.getElementById('show-login-from-register');
+
+// Abrir modal de registro
+if (btnShowRegister) {
+    btnShowRegister.addEventListener('click', () => {
+        registerModal.style.display = 'block';
+    });
+}
+
+// Abrir modal de login
+if (btnShowLogin) {
+    btnShowLogin.addEventListener('click', () => {
+        loginModal.style.display = 'block';
+    });
+}
+
+// Fechar modal de login
+if (closeLogin) {
+    closeLogin.addEventListener('click', () => {
+        loginModal.style.display = 'none';
+    });
+}
+
+// Fechar modal de registro
+if (closeRegister) {
+    closeRegister.addEventListener('click', () => {
+        registerModal.style.display = 'none';
+    });
+}
+
+// Alternar de login para registro
+if (showRegisterFromLogin) {
+    showRegisterFromLogin.addEventListener('click', (e) => {
+        e.preventDefault();
+        loginModal.style.display = 'none';
+        registerModal.style.display = 'block';
+    });
+}
+
+// Alternar de registro para login
+if (showLoginFromRegister) {
+    showLoginFromRegister.addEventListener('click', (e) => {
+        e.preventDefault();
+        registerModal.style.display = 'none';
+        loginModal.style.display = 'block';
+    });
+}
+
+// Fechar modal ao clicar fora
+window.addEventListener('click', (e) => {
+    if (e.target === loginModal) {
+        loginModal.style.display = 'none';
+    }
+    if (e.target === registerModal) {
+        registerModal.style.display = 'none';
+    }
 });
 
 // Verifica se já está logado
@@ -50,9 +110,6 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             const data = await response.json();
             // Salva os dados do usuário
             localStorage.setItem('user', JSON.stringify(data));
-            // Salva as credenciais de autenticação
-            const credentials = btoa(`${email}:${password}`);
-            localStorage.setItem('authCredentials', credentials);
             window.location.href = 'dashboard.html';
         } else {
             const data = await response.json().catch(() => ({ message: 'Erro ao fazer login' }));
@@ -84,14 +141,18 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
     const username = document.getElementById('register-username').value.trim();
     const email = document.getElementById('register-email').value.trim();
     const password = document.getElementById('register-password').value;
+    const confirmPassword = document.getElementById('register-confirm-password').value;
     const errorDiv = document.getElementById('register-error');
+    const successDiv = document.getElementById('register-success');
     
-    // Limpar mensagem de erro anterior
+    // Limpar mensagens anteriores
     errorDiv.classList.remove('show');
     errorDiv.textContent = '';
+    successDiv.classList.remove('show');
+    successDiv.textContent = '';
     
     // Validação no frontend
-    if (!username || !email || !password) {
+    if (!username || !email || !password || !confirmPassword) {
         errorDiv.textContent = 'Todos os campos são obrigatórios';
         errorDiv.classList.add('show');
         return;
@@ -105,6 +166,12 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
     
     if (password.length < 6) {
         errorDiv.textContent = 'A senha deve ter pelo menos 6 caracteres';
+        errorDiv.classList.add('show');
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        errorDiv.textContent = 'As senhas não coincidem';
         errorDiv.classList.add('show');
         return;
     }
