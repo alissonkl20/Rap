@@ -1,3 +1,12 @@
 spring:
   application:
-    name: MoveRap
+    name: rapnat
+  datasource:
+    url: jdbc:postgresql://localhost:5432/rapnat
+    username: postgres
+    password: Alissonkiss@12
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true

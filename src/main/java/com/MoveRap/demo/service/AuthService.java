@@ -2,10 +2,11 @@ package com.MoveRap.demo.service;
 
 import com.MoveRap.demo.Dtos.UserCadastroDto;
 import com.MoveRap.demo.Dtos.UserDetalhamentoDto;
+import com.MoveRap.demo.Dtos.UserLoginDto;
 import com.MoveRap.demo.model.UserModel;
 import com.MoveRap.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,7 +14,7 @@ public class AuthService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
     public UserDetalhamentoDto registerUser(UserCadastroDto userCadastroDto) {
         UserModel user = new UserModel();
         user.setUsername(userCadastroDto.getUsername());
@@ -21,5 +22,25 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(userCadastroDto.getPassword()));
         user = userRepository.save(user);
         return new UserDetalhamentoDto(user.getId(), user.getUsername(), user.getEmail());
+    }
+
+    public UserDetalhamentoDto authenticateUser(String email, String password) {
+        UserModel user = userRepository.findByEmail(email);
+        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
+            return new UserDetalhamentoDto(user.getId(), user.getUsername(), user.getEmail());
+        }
+        return null;
+    }
+
+    public UserDetalhamentoDto loginUser(UserLoginDto userLoginDto) {
+        return authenticateUser(userLoginDto.getEmail(), userLoginDto.getSenha());
+    }
+
+    public UserDetalhamentoDto getUserDetailsByUsername(String username) {
+        UserModel user = userRepository.findByUsername(username);
+        if (user != null) {
+            return new UserDetalhamentoDto(user.getId(), user.getUsername(), user.getEmail());
+        }
+        return null;
     }
 }
