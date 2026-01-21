@@ -19,4 +19,5 @@ public class Screen {
     public String userPage() {
         return "user-page";
     }
+    
 }
