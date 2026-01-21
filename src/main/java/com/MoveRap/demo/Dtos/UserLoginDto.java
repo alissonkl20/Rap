@@ -8,7 +8,6 @@ public class UserLoginDto {
     @NotBlank(message = "O campo senha é obrigatório.")
     private String senha;
 
-    // Getters e Setters
     public String getEmail() {
         return email;
     }

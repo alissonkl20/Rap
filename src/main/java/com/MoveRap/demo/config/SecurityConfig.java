@@ -10,6 +10,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.http.HttpMethod;
 
 @Configuration
 @EnableWebSecurity
@@ -26,6 +27,8 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll() // Permitir acesso público aos endpoints de autenticação
+                .requestMatchers(HttpMethod.POST, "/user-page/update").permitAll()
+                .requestMatchers("/user-page/**").authenticated() // Apenas usuários autenticados podem acessar os endpoints de user-page
                 .requestMatchers("/auth/me").authenticated() // Apenas usuários autenticados podem acessar suas informações
                 .anyRequest().authenticated()
             );

@@ -6,6 +6,8 @@ import com.MoveRap.demo.Dtos.UserLoginDto;
 import com.MoveRap.demo.model.UserModel;
 import com.MoveRap.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +25,6 @@ public class AuthService {
         user = userRepository.save(user);
         return new UserDetalhamentoDto(user.getId(), user.getUsername(), user.getEmail());
     }
-
     public UserDetalhamentoDto authenticateUser(String email, String password) {
         UserModel user = userRepository.findByEmail(email);
         if (user != null && passwordEncoder.matches(password, user.getPassword())) {
@@ -31,16 +32,19 @@ public class AuthService {
         }
         return null;
     }
-
     public UserDetalhamentoDto loginUser(UserLoginDto userLoginDto) {
         return authenticateUser(userLoginDto.getEmail(), userLoginDto.getSenha());
     }
-
     public UserDetalhamentoDto getUserDetailsByUsername(String username) {
         UserModel user = userRepository.findByUsername(username);
         if (user != null) {
             return new UserDetalhamentoDto(user.getId(), user.getUsername(), user.getEmail());
         }
         return null;
+    }
+    public boolean isAuthenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("Authentication: " + authentication);
+        return authentication != null && authentication.isAuthenticated();
     }
 }
