@@ -16,7 +16,7 @@ import org.springframework.security.core.Authentication;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/user-page") // Corrigindo o padrão de rota
+@RequestMapping("/user-page") 
 public class UserPageController {
     @Autowired
     private UserPageRepository userPageRepository;
@@ -28,25 +28,21 @@ public class UserPageController {
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Não autenticado");
         }
-        
         String username = authentication.getName();
         UserModel user = userRepository.findByUsername(username);
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
         }
         
-        // Verifica se já existe uma página para este usuário
         Optional<UserPage> existingPage = userPageRepository.findByUserId(user.getId());
         if (existingPage.isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Usuário já possui uma página");
         }
-        
         UserPage userPage = new UserPage();
         userPage.setUser(user);
         userPage.setBiography(userPageDto.getBiography());
         userPage.setProfileImageUrl(userPageDto.getProfileImageUrl());
         userPage.setBackgroundImageUrl(userPageDto.getBackgroundImageUrl());
-        // Converte lista de URLs em string separada por vírgula
         if (userPageDto.getMusicUrlsList() != null && !userPageDto.getMusicUrlsList().isEmpty()) {
             userPage.setMusicUrls(String.join(",", userPageDto.getMusicUrlsList()));
         }
@@ -69,7 +65,6 @@ public class UserPageController {
         userPage.setBiography(userPageDto.getBiography());
         userPage.setProfileImageUrl(userPageDto.getProfileImageUrl());
         userPage.setBackgroundImageUrl(userPageDto.getBackgroundImageUrl());
-        // Converte lista de URLs em string separada por vírgula
         if (userPageDto.getMusicUrlsList() != null && !userPageDto.getMusicUrlsList().isEmpty()) {
             userPage.setMusicUrls(String.join(",", userPageDto.getMusicUrlsList()));
         }
@@ -78,13 +73,11 @@ public class UserPageController {
         response.put("message", "Página do usuário atualizada com sucesso.");
         return ResponseEntity.ok(response);
     }
-
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteUserPage(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Não autenticado");
         }
-        
         String username = authentication.getName();
         UserModel user = userRepository.findByUsername(username);
         if (user == null) {
@@ -96,7 +89,17 @@ public class UserPageController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Página do usuário não encontrada");
         }
         
-        userPageRepository.delete(existingPage.get());
+        // Quebrar o relacionamento bidirecional antes de deletar
+        UserPage userPage = existingPage.get();
+        user.setUserPage(null);
+        userPage.setUser(null);
+        
+        // Salvar o usuário sem a página associada
+        userRepository.save(user);
+        
+        // Agora deletar a página
+        userPageRepository.delete(userPage);
+        
         return ResponseEntity.ok("Página do usuário excluída com sucesso.");
     }
 
@@ -124,5 +127,37 @@ public class UserPageController {
             dto.setMusicUrlsList(java.util.Arrays.asList(page.getMusicUrls().split(",")));
         }
         return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/public/{username}")
+    public ResponseEntity<java.util.Map<String, Object>> getPublicUserPage(@PathVariable String username) {
+        UserModel user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
+        }
+        
+        Optional<UserPage> userPageOpt = userPageRepository.findByUserId(user.getId());
+        if (userPageOpt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Página do usuário não encontrada");
+        }
+        
+        UserPage page = userPageOpt.get();
+        
+        // Cria response com informações públicas
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        response.put("username", user.getUsername());
+        response.put("name", user.getUsername()); // Pode adicionar campo 'name' no UserModel se desejar
+        response.put("biography", page.getBiography());
+        response.put("profileImageUrl", page.getProfileImageUrl());
+        response.put("backgroundImageUrl", page.getBackgroundImageUrl());
+        
+        // Converte string em lista de URLs
+        if (page.getMusicUrls() != null && !page.getMusicUrls().isEmpty()) {
+            response.put("musicUrlsList", java.util.Arrays.asList(page.getMusicUrls().split(",")));
+        } else {
+            response.put("musicUrlsList", new java.util.ArrayList<>());
+        }
+        
+        return ResponseEntity.ok(response);
     }
 }

@@ -1,0 +1,392 @@
+
+.profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.loading,
+.error-message,
+.not-found {
+    text-align: center;
+    padding: 60px 20px;
+    font-size: 0.95rem;
+}
+
+.error-message {
+    color: #ff0000;
+}
+
+.not-found {
+    padding: 100px 20px;
+}
+
+.not-found h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #ff0000;
+}
+
+.not-found p {
+    font-size: 0.95rem;
+    margin-bottom: 30px;
+    color: #ffffff;
+}
+
+/* Profile Header */
+.profile-header {
+    position: relative;
+    width: 100%;
+    height: 350px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: -80px;
+    animation: fadeInDown 0.8s ease-out;
+    box-shadow: 0 10px 40px rgba(255, 0, 0, 0.3);
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.background-image {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: transform 0.3s ease;
+}
+
+.profile-header:hover .background-image {
+    transform: scale(1.05);
+}
+
+.profile-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%);
+}
+
+/* Profile Info */
+.profile-info {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 0 40px;
+    margin-bottom: 40px;
+}
+
+.profile-avatar-container {
+    position: relative;
+    z-index: 10;
+}
+
+.profile-avatar {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    border: 6px solid #ff0000;
+    box-shadow: 0 10px 30px rgba(255, 0, 0, 0.5), 0 0 50px rgba(255, 0, 0, 0.3);
+    object-fit: cover;
+    background-color: #000000;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: avatarEntry 1s ease-out;
+}
+
+.profile-avatar:hover {
+    transform: scale(1.1) rotate(-5deg);
+    box-shadow: 0 15px 40px rgba(255, 0, 0, 0.7), 0 0 70px rgba(255, 0, 0, 0.5);
+    border-color: #ffffff;
+}
+
+@keyframes avatarEntry {
+    from {
+        opacity: 0;
+        transform: scale(0.5) rotate(180deg);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+/* Profile Sections */
+.profile-section {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(255, 0, 0, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    animation: slideInUp 0.6s ease-out backwards;
+    transition: all 0.4s ease;
+}
+
+.profile-section:nth-child(1) { animation-delay: 0.1s; }
+.profile-section:nth-child(2) { animation-delay: 0.2s; }
+.profile-section:nth-child(3) { animation-delay: 0.3s; }
+
+.profile-section:hover {
+    border-color: rgba(255, 0, 0, 0.5);
+    box-shadow: 0 12px 40px rgba(255, 0, 0, 0.3);
+    transform: translateY(-5px);
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.profile-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #ff0000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Biography */
+.biography-content {
+    line-height: 1.8;
+    color: #ffffff;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+}
+
+
+.biography-content p {
+    margin: 0;
+}
+
+/* Music List */
+.music-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.music-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: #000000;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+.music-icon {
+    font-size: 2rem;
+    color: #ff0000;
+}
+
+.music-info {
+    flex: 1;
+}
+
+.music-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ff0000;
+    margin: 0 0 5px 0;
+}
+
+.music-url {
+    font-size: 0.75rem;
+    color: #ffffff;
+    word-break: break-all;
+}
+
+.music-link {
+    padding: 8px 20px;
+    background: #ff0000;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.music-link::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.music-link:hover::before {
+    width: 200px;
+    height: 200px;
+}
+
+.music-link:hover {
+    background: #ff0000;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(255, 0, 0, 0.6);
+}
+
+/* Stats Section */
+.stats-section {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.stat-card {
+    flex: 1;
+    text-align: center;
+    padding: 25px;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(255, 0, 0, 0.4);
+    border: 2px solid #ff0000;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: scaleIn 0.6s ease-out backwards;
+}
+
+.stat-card:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 15px 35px rgba(255, 0, 0, 0.6);
+    border-color: #ffffff;
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.stat-card h3 {
+    font-size: 2.5rem;
+    margin: 0 0 10px 0;
+}
+
+.stat-card p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+    .profile-container {
+        padding: 20px 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-header {
+        height: 280px;
+    }
+    
+    .profile-avatar {
+        width: 140px;
+        height: 140px;
+    }
+    
+    .stats-section {
+        flex-direction: column;
+    }
+    
+    .stat-card {
+        width: 100%;
+    }
+    
+    .stat-card h3 {
+        font-size: 2rem;
+    }
+
+    .profile-section {
+        padding: 20px 15px;
+    }
+
+    .profile-section h2 {
+        font-size: 1.5rem;
+    }
+
+    .music-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .profile-container {
+        padding: 15px 10px;
+    }
+    
+    .profile-header {
+        height: 220px;
+        border-radius: 15px;
+    }
+    
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-width: 4px;
+    }
+    
+    .profile-section {
+        padding: 20px 12px;
+        margin-bottom: 15px;
+    }
+    
+    .profile-section h2 {
+        font-size: 1.3rem;
+    }
+    
+    .biography-content {
+        font-size: 0.85rem;
+    }
+    
+    .music-item {
+        padding: 12px;
+    }
+
+
+/* Empty States */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #ffffff;
+}
+
+.empty-state p {
+    font-size: 0.9rem;
+    margin: 0;
+}

@@ -42,16 +42,13 @@ public class UserPageDto {
     public void setBackgroundImageUrl(String backgroundImageUrl) {
         this.backgroundImageUrl = backgroundImageUrl;
     }
-    
     @Deprecated
     public String getMusicUrls() {
-        // Converte lista para string para compatibilidade retroativa
         if (musicUrlsList != null && !musicUrlsList.isEmpty()) {
             return String.join(",", musicUrlsList);
         }
         return musicUrls;
     }
-    
     @Deprecated
     public void setMusicUrls(String musicUrls) {
         this.musicUrls = musicUrls;
@@ -60,11 +57,9 @@ public class UserPageDto {
             this.musicUrlsList = List.of(musicUrls.split(","));
         }
     }
-    
     public List<String> getMusicUrlsList() {
         return musicUrlsList;
     }
-    
     public void setMusicUrlsList(List<String> musicUrlsList) {
         this.musicUrlsList = musicUrlsList;
     }

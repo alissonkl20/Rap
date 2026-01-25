@@ -19,5 +19,9 @@ public class Screen {
     public String userPage() {
         return "user-page";
     }
-    
+
+    @GetMapping("/profile")
+    public String profile() {
+        return "profile";
+    }
 }

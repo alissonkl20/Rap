@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil do Artista - MoveRap</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/profile.css">
+</head>
+<body>
+    <!-- Navbar removida para foco no perfil -->
+
+    <div class="profile-container">
+        <div id="loading" class="loading">
+            <p>Carregando perfil...</p>
+        </div>
+
+        <div id="error-message" class="error-message" style="display: none;">
+            <p>Erro ao carregar o perfil do artista.</p>
+        </div>
+
+        <div id="profile-content" class="profile-content" style="display: none;">
+            <!-- Background Image -->
+            <div class="profile-header">
+                <div id="background-image" class="background-image"></div>
+                <div class="profile-overlay"></div>
+            </div>
+
+            <!-- Profile Info -->
+            <div class="profile-info">
+                <div class="profile-avatar-container">
+                    <img id="profile-avatar" src="" alt="Avatar do Artista" class="profile-avatar">
+                </div>
+            </div>
+
+            <!-- Biography Section -->
+            <div class="profile-section biography-section">
+                <h2>Biografia</h2>
+                <div id="biography-content" class="biography-content">
+                    <p>Nenhuma biografia disponível.</p>
+                </div>
+            </div>
+
+            <!-- Music Section -->
+            <div class="profile-section music-section">
+                <h2>Músicas</h2>
+                <div id="music-list" class="music-list">
+                    <p>Nenhuma música adicionada.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="not-found" class="not-found" style="display: none;">
+            <h2>Perfil não encontrado</h2>
+            <p>Este artista ainda não criou sua página.</p>
+            <a href="index.html" class="btn btn-primary">Voltar ao Início</a>
+        </div>
+    </div>
+
+    <script src="js/profile.js"></script>
+</body>
+</html>

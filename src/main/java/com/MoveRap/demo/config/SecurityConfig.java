@@ -58,14 +58,24 @@ public class SecurityConfig {
                     .requestMatchers("/", "/index", "/index.html").permitAll()
                     .requestMatchers("/auth/register", "/auth/login").permitAll()
                     .requestMatchers("/css/**", "/scripts/**", "/static/**").permitAll()
+                    .requestMatchers("/uploads/**").permitAll() // Permitir acesso às imagens
                     .requestMatchers("/favicon.ico").permitAll()
-                    // User-page GET é público para visualização
+                    // User-page GET público para visualização
                     .requestMatchers(HttpMethod.GET, "/user-page").permitAll()
-                    // Endpoints de API da user-page requerem autenticação
-                    .requestMatchers("/user-page/**").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/user-page/public/**").permitAll()
+                    // Endpoints de API e user-page requerem autenticação
+                    .requestMatchers("/user-page/me").authenticated()
+                    .requestMatchers("/user-page/create").authenticated()
+                    .requestMatchers("/user-page/update").authenticated()
+                    .requestMatchers("/user-page/delete").authenticated()
+                    .requestMatchers("/api/upload/**").authenticated()
+                    .requestMatchers("/api/**").authenticated()
                     // Qualquer outra requisição requer autenticação
                     .anyRequest().authenticated()
-                );
+                )
+            .httpBasic(httpBasic -> httpBasic
+                .realmName("MoveRap")
+            );
 
         return http.build();
     }

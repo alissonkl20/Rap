@@ -68,7 +68,7 @@ async function uploadImage(file, type) {
     formData.append('type', type);
 
     try {
-        const response = await fetch(`${API_URL}/api/upload`, {
+        const response = await fetch(`${API_URL}/api/upload/image`, {
             method: 'POST',
             headers: {
                 'Authorization': `Basic ${authCredentials}`
@@ -81,8 +81,14 @@ async function uploadImage(file, type) {
             const data = await response.json();
             return `${API_URL}${data.url}`;
         } else {
-            const error = await response.json();
-            throw new Error(error.message || 'Erro ao fazer upload da imagem');
+            let errorMessage = 'Erro ao fazer upload da imagem';
+            try {
+                const error = await response.json();
+                errorMessage = error.message || errorMessage;
+            } catch (jsonError) {
+                console.warn('Resposta inválida do servidor:', jsonError);
+            }
+            throw new Error(errorMessage);
         }
     } catch (error) {
         console.error('Erro no upload:', error);
@@ -132,8 +138,11 @@ async function loadUserPage() {
             } else {
                 displayNoPage();
             }
+        } else if (response.status === 403) {
+            console.warn('Acesso negado: verifique suas permissões ou autenticação.');
+            displayNoPage();
         } else {
-            // Usuário não tem página ainda
+            console.error('Erro ao carregar página:', response.statusText);
             displayNoPage();
         }
     } catch (error) {
@@ -201,6 +210,14 @@ function displayUserPage() {
             ${musicHtml}
         </div>
     `;
+    
+    // Mostrar link do perfil público
+    const viewPublicProfile = document.getElementById('view-public-profile');
+    const publicProfileLink = document.getElementById('public-profile-link');
+    if (viewPublicProfile && publicProfileLink) {
+        viewPublicProfile.style.display = 'block';
+        publicProfileLink.href = `profile.html?username=${currentUser.username}`;
+    }
 }
 
 // Preencher formulário de edição

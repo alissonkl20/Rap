@@ -33,9 +33,12 @@ services:
     restart: unless-stopped
     networks:
       - moverap-net
+    volumes:
+      - uploads-data:/app/uploads
 
 networks:
   moverap-net:
 
 volumes:
   db-data:
+  uploads-data:

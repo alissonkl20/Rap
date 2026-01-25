@@ -1,0 +1,38 @@
+services:
+  # Banco de dados PostgreSQL
+  - type: pserv
+    name: moverap-db
+    env: docker
+    plan: free
+    region: oregon
+    databases:
+      - name: rapnat
+        user: rapnat_user
+
+  # Aplicação Spring Boot
+  - type: web
+    name: moverap-api
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: moverap-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: moverap-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: moverap-db
+          property: password
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+    disk:
+      name: uploads
+      mountPath: /app/uploads
+      sizeGB: 1
