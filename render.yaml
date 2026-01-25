@@ -2,17 +2,16 @@ services:
   # Banco de dados PostgreSQL
   - type: pserv
     name: moverap-db
-    env: docker
     plan: free
     region: oregon
-    databases:
-      - name: rapnat
-        user: rapnat_user
+    ipAllowList: []
+    databaseName: rapnat
+    databaseUser: rapnat_user
 
   # Aplicação Spring Boot
   - type: web
     name: moverap-api
-    env: docker
+    runtime: docker
     plan: free
     region: oregon
     dockerfilePath: ./Dockerfile
