@@ -188,7 +188,6 @@ function displayUserPage() {
                     <div class="music-item">
                         <span>Música ${index + 1}</span>
                         <a href="${url.trim()}" target="_blank">Ouvir</a>
-                        <button type="button" class="btn-remove-preview" onclick="removeMusicFromPreview(${index})">❌</button>
                     </div>
                 `).join('')}
             </div>
@@ -355,62 +354,6 @@ function addMusicUrlInput(value = '') {
 // Remover campo de URL de música
 function removeMusicUrl(button) {
     button.parentElement.remove();
-}
-
-// Remover música da preview e do backend
-async function removeMusicFromPreview(index) {
-    if (!confirm('Tem certeza que deseja remover esta música?')) {
-        return;
-    }
-
-    // Suporta tanto array quanto string separada por vírgulas
-    let musicUrls = [];
-    if (userPage.musicUrlsList && Array.isArray(userPage.musicUrlsList)) {
-        musicUrls = [...userPage.musicUrlsList];
-    } else if (userPage.musicUrls) {
-        if (Array.isArray(userPage.musicUrls)) {
-            musicUrls = [...userPage.musicUrls];
-        } else if (typeof userPage.musicUrls === 'string') {
-            musicUrls = userPage.musicUrls.split(',').filter(url => url.trim());
-        }
-    }
-    
-    // Remove a música do array
-    musicUrls.splice(index, 1);
-    
-    // Atualiza o userPage (tanto array quanto string para compatibilidade)
-    userPage.musicUrlsList = musicUrls;
-    userPage.musicUrls = musicUrls.join(',');
-    
-    try {
-        // Atualiza no backend
-        const formData = new FormData();
-        formData.append('biography', userPage.biography || '');
-        formData.append('musicUrls', userPage.musicUrls);
-
-        const response = await fetch(`${API_URL}/user-page/save`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Basic ${authCredentials}`
-            },
-            body: formData
-        });
-
-        if (!response.ok) {
-            throw new Error('Erro ao remover música');
-        }
-
-        // Recarrega a página
-        await loadUserPage();
-        
-        // Mostra mensagem de sucesso
-        showSuccessMessage('Música removida com sucesso!');
-    } catch (error) {
-        console.error('Erro ao remover música:', error);
-        alert('Erro ao remover música. Tente novamente.');
-        // Reverte a mudança em caso de erro
-        await loadUserPage();
-    }
 }
 
 // Mostrar mensagem de sucesso temporária
