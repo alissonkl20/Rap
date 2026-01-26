@@ -13,6 +13,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.TOO_MANY_REQUESTS;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class AuthService {
@@ -20,6 +26,11 @@ public class AuthService {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    private static final int MAX_LOGIN_ATTEMPTS = 5;
+    private static final int LOCKOUT_DURATION_MINUTES = 15;
+    private final Map<String, Integer> loginAttempts = new ConcurrentHashMap<>();
+    private final Map<String, LocalDateTime> lockoutTime = new ConcurrentHashMap<>();
+
     public UserDetalhamentoDto registerUser(UserCadastroDto userCadastroDto) {
         UserModel user = new UserModel();
         user.setUsername(userCadastroDto.getUsername());
@@ -30,6 +41,13 @@ public class AuthService {
     }
     public UserDetalhamentoDto authenticateUser(String emailOrUsername, String password) {
         System.out.println("Autenticando usuário com email/username: " + emailOrUsername);
+        
+        // Verificar se a conta está bloqueada
+        if (isAccountLocked(emailOrUsername)) {
+            long minutesRemaining = getMinutesUntilUnlock(emailOrUsername);
+            throw new ResponseStatusException(TOO_MANY_REQUESTS, 
+                "Conta temporariamente bloqueada devido a múltiplas tentativas de login falhadas. Tente novamente em " + minutesRemaining + " minuto(s).");
+        }
         UserModel user = userRepository.findByEmail(emailOrUsername);
         if (user == null) {
             user = userRepository.findByUsername(emailOrUsername);
@@ -38,12 +56,18 @@ public class AuthService {
             System.out.println("Usuário encontrado: " + user.getUsername());
             if (passwordEncoder.matches(password, user.getPassword())) {
                 System.out.println("Senha válida para o usuário: " + user.getUsername());
+                // Login bem-sucedido - resetar contador de tentativas
+                resetLoginAttempts(emailOrUsername);
                 return new UserDetalhamentoDto(user.getId(), user.getUsername(), user.getEmail());
             } else {
                 System.out.println("Senha inválida para o usuário: " + user.getUsername());
+                // Incrementar tentativas falhadas
+                recordFailedLoginAttempt(emailOrUsername);
             }
         } else {
             System.out.println("Usuário não encontrado para o email/username: " + emailOrUsername);
+            // Incrementar tentativas falhadas mesmo se usuário não existir (segurança)
+            recordFailedLoginAttempt(emailOrUsername);
         }
         return null;
     }
@@ -71,5 +95,38 @@ public class AuthService {
             }
         }
         throw new ResponseStatusException(UNAUTHORIZED, "Usuário não autenticado");
+    }
+    private void recordFailedLoginAttempt(String emailOrUsername) {
+        int attempts = loginAttempts.getOrDefault(emailOrUsername, 0) + 1;
+        loginAttempts.put(emailOrUsername, attempts);
+        
+        if (attempts >= MAX_LOGIN_ATTEMPTS) {
+            lockoutTime.put(emailOrUsername, LocalDateTime.now());
+            System.out.println("Conta bloqueada para: " + emailOrUsername + " após " + attempts + " tentativas falhadas");
+        }
+    }
+    private void resetLoginAttempts(String emailOrUsername) {
+        loginAttempts.remove(emailOrUsername);
+        lockoutTime.remove(emailOrUsername);
+    }
+    private boolean isAccountLocked(String emailOrUsername) {
+        if (!lockoutTime.containsKey(emailOrUsername)) {
+            return false;
+        }
+        LocalDateTime lockTime = lockoutTime.get(emailOrUsername);
+        LocalDateTime unlockTime = lockTime.plusMinutes(LOCKOUT_DURATION_MINUTES);
+        if (LocalDateTime.now().isAfter(unlockTime)) {
+            resetLoginAttempts(emailOrUsername);
+            return false;
+        }
+        return true;
+    }
+    private long getMinutesUntilUnlock(String emailOrUsername) {
+        LocalDateTime lockTime = lockoutTime.get(emailOrUsername);
+        if (lockTime == null) {
+            return 0;
+        }
+        LocalDateTime unlockTime = lockTime.plusMinutes(LOCKOUT_DURATION_MINUTES);
+        return ChronoUnit.MINUTES.between(LocalDateTime.now(), unlockTime) + 1;
     }
 }
