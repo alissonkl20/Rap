@@ -1,51 +1,35 @@
 const API_URL = 'http://localhost:8080';
 
-// Elementos da Landing Page e Modais
 const landingPage = document.getElementById('landing-page');
 const loginModal = document.getElementById('login-modal');
 const registerModal = document.getElementById('register-modal');
-
-// Botões da landing page
 const btnShowRegister = document.getElementById('btn-show-register');
 const btnShowLogin = document.getElementById('btn-show-login');
-
-// Botões de fechar modais
 const closeLogin = document.getElementById('close-login');
 const closeRegister = document.getElementById('close-register');
-
-// Links para alternar entre login e registro
 const showRegisterFromLogin = document.getElementById('show-register-from-login');
 const showLoginFromRegister = document.getElementById('show-login-from-register');
 
-// Abrir modal de registro
 if (btnShowRegister) {
     btnShowRegister.addEventListener('click', () => {
         registerModal.style.display = 'block';
     });
 }
-
-// Abrir modal de login
 if (btnShowLogin) {
     btnShowLogin.addEventListener('click', () => {
         loginModal.style.display = 'block';
     });
 }
-
-// Fechar modal de login
 if (closeLogin) {
     closeLogin.addEventListener('click', () => {
         loginModal.style.display = 'none';
     });
 }
-
-// Fechar modal de registro
 if (closeRegister) {
     closeRegister.addEventListener('click', () => {
         registerModal.style.display = 'none';
     });
 }
-
-// Alternar de login para registro
 if (showRegisterFromLogin) {
     showRegisterFromLogin.addEventListener('click', (e) => {
         e.preventDefault();
@@ -53,8 +37,6 @@ if (showRegisterFromLogin) {
         registerModal.style.display = 'block';
     });
 }
-
-// Alternar de registro para login
 if (showLoginFromRegister) {
     showLoginFromRegister.addEventListener('click', (e) => {
         e.preventDefault();
@@ -62,8 +44,6 @@ if (showLoginFromRegister) {
         loginModal.style.display = 'block';
     });
 }
-
-// Fechar modal ao clicar fora
 window.addEventListener('click', (e) => {
     if (e.target === loginModal) {
         loginModal.style.display = 'none';
@@ -72,8 +52,6 @@ window.addEventListener('click', (e) => {
         registerModal.style.display = 'none';
     }
 });
-
-// Verifica se já está logado
 if (localStorage.getItem('user')) {
     window.location.href = 'dashboard.html';
 }
@@ -103,6 +81,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include',
             body: JSON.stringify({ email, password })
         });
 

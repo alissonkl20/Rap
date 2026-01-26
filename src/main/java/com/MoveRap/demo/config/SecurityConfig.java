@@ -54,22 +54,24 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                    // Permitir rotas públicas
+                    // Permitir rotas públicas (ordem IMPORTANTE - regras mais específicas primeiro)
                     .requestMatchers("/", "/index", "/index.html").permitAll()
-                    .requestMatchers("/auth/register", "/auth/login").permitAll()
                     .requestMatchers("/css/**", "/scripts/**", "/static/**").permitAll()
                     .requestMatchers("/uploads/**").permitAll() // Permitir acesso às imagens
                     .requestMatchers("/favicon.ico").permitAll()
+                    // Permitir endpoints de autenticação sem autenticação prévia
+                    .requestMatchers("/auth/**").permitAll()
                     // User-page GET público para visualização
                     .requestMatchers(HttpMethod.GET, "/user-page").permitAll()
                     .requestMatchers(HttpMethod.GET, "/user-page/public/**").permitAll()
-                    // Endpoints de API e user-page requerem autenticação
+                    // Endpoints de API requerem autenticação
                     .requestMatchers("/user-page/me").authenticated()
-                    .requestMatchers("/user-page/create").authenticated()
-                    .requestMatchers("/user-page/update").authenticated()
-                    .requestMatchers("/user-page/delete").authenticated()
-                    .requestMatchers("/api/upload/**").authenticated()
                     .requestMatchers("/api/**").authenticated()
+                    // IMPORTANTE: Exigir autenticação HTTP Basic para outros métodos POST, PUT e DELETE
+                    // Isso força o cliente a enviar credenciais (username:password) no header Authorization
+                    .requestMatchers(HttpMethod.POST, "/**").authenticated()
+                    .requestMatchers(HttpMethod.PUT, "/**").authenticated()
+                    .requestMatchers(HttpMethod.DELETE, "/**").authenticated()
                     // Qualquer outra requisição requer autenticação
                     .anyRequest().authenticated()
                 )

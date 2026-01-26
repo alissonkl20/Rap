@@ -22,6 +22,7 @@ public class UserPageController {
     private UserPageRepository userPageRepository;
     @Autowired
     private UserRepository userRepository;
+
     @PostMapping("/create")
     public ResponseEntity<UserPage> createUserPage(@Valid @RequestBody UserPageDto userPageDto, 
                                                    Authentication authentication) {
@@ -50,6 +51,7 @@ public class UserPageController {
         UserPage savedPage = userPageRepository.save(userPage);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPage);
     }
+
     @PutMapping("/update")
     public ResponseEntity<Object> updateUserPage(@Valid @RequestBody UserPageDto userPageDto, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -73,6 +75,7 @@ public class UserPageController {
         response.put("message", "Página do usuário atualizada com sucesso.");
         return ResponseEntity.ok(response);
     }
+
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteUserPage(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -101,6 +104,49 @@ public class UserPageController {
         userPageRepository.delete(userPage);
         
         return ResponseEntity.ok("Página do usuário excluída com sucesso.");
+    }
+
+    @PostMapping("/save")
+    public ResponseEntity<Object> saveUserPage(@RequestParam(required = false) String biography,
+                                               @RequestParam(required = false) String musicUrls,
+                                               @RequestParam(required = false) String profileImageUrl,
+                                               @RequestParam(required = false) String backgroundImageUrl,
+                                               Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Não autenticado");
+        }
+        String username = authentication.getName();
+        UserModel user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
+        }
+        Optional<UserPage> optionalUserPage = userPageRepository.findByUserId(user.getId());
+        UserPage userPage;
+        
+        if (optionalUserPage.isPresent()) {
+            userPage = optionalUserPage.get();
+        } else {
+            userPage = new UserPage();
+            userPage.setUser(user);
+        }
+        
+        if (biography != null) {
+            userPage.setBiography(biography);
+        }
+        if (profileImageUrl != null) {
+            userPage.setProfileImageUrl(profileImageUrl);
+        }
+        if (backgroundImageUrl != null) {
+            userPage.setBackgroundImageUrl(backgroundImageUrl);
+        }
+        if (musicUrls != null) {
+            userPage.setMusicUrls(musicUrls);
+        }
+        
+        userPageRepository.save(userPage);
+        java.util.Map<String, String> response = new java.util.HashMap<>();
+        response.put("message", "Página do usuário salva com sucesso.");
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/me")

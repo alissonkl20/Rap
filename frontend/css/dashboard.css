@@ -365,6 +365,24 @@
     transform: scale(1.2);
 }
 
+.btn-remove-preview {
+    background: rgba(255, 0, 0, 0.2);
+    border: 1px solid rgba(255, 0, 0, 0.5);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 6px 10px;
+    margin-left: 10px;
+    transition: all 0.3s ease;
+    color: #fff;
+}
+
+.btn-remove-preview:hover {
+    background: rgba(255, 0, 0, 0.8);
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+}
+
 .form-actions {
     display: flex;
     gap: 15px;
@@ -578,6 +596,29 @@ input[type="file"]:hover {
     
     .nav-container {
         padding: 15px 20px;
+    }
+}
+
+/* Animações para toast messages */
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100px);
     }
 }
 
