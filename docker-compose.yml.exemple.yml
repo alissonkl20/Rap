@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: example_db
+      POSTGRES_USER: example_user
+      POSTGRES_PASSWORD: example_password
+    ports:
+      - "5433:5432"
+    networks:
+      - moverap-net
+    restart: unless-stopped
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "example_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  moverap:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/example_db
+      - SPRING_DATASOURCE_USERNAME=example_user
+      - SPRING_DATASOURCE_PASSWORD=example_password
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - moverap-net
+    volumes:
+      - uploads-data:/app/uploads
+
+networks:
+  moverap-net:
+
+volumes:
+  db-data:
+  uploads-data:
