@@ -3,18 +3,18 @@ spring:
   application:
     name: rapnat
   datasource:
-    url: jdbc:postgresql://moverap-db:5432/rapnat
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: ${DATABASE_URL:jdbc:postgresql://moverap-db:5432/rapnat}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
   jpa:
     hibernate:
       ddl-auto: update
-      dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false  # Altere para true apenas para debug
     properties:
       hibernate:
         format_sql: true
         use_sql_comments: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   servlet:
     multipart:
       enabled: true
@@ -23,3 +23,4 @@ spring:
 
 file:
   upload-dir: uploads
+postgresql://moverap_db_user:n8EFkhOgVFlojUWW4axOiAzAKhuwtOUK@dpg-d5s6likoud1c7392rcv0-a/moverap_db
