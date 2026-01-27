@@ -23,4 +23,3 @@ spring:
 
 file:
   upload-dir: uploads
-postgresql://moverap_db_user:n8EFkhOgVFlojUWW4axOiAzAKhuwtOUK@dpg-d5s6likoud1c7392rcv0-a/moverap_db
