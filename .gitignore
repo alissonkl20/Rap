@@ -36,3 +36,6 @@ build/
 ### Uploads ###
 uploads/
 !uploads/.gitkeep
+
+### Docker ###
+docker-compose.yml
