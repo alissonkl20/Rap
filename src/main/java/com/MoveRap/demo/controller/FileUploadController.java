@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.io.InputStream;
 
 @RestController
 @RequestMapping("/api/upload")
@@ -49,6 +50,12 @@ public class FileUploadController {
         if (originalFilename == null || !isAllowedExtension(originalFilename)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
                 "Formato não permitido. Use: jpg, jpeg, png, gif ou webp");
+        }
+
+        // SEGURANÇA: Validar conteúdo real do arquivo (magic bytes)
+        if (!isValidImageFile(file)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+                "Arquivo inválido. O conteúdo não corresponde a uma imagem válida");
         }
 
         try {
@@ -87,6 +94,52 @@ public class FileUploadController {
             }
         }
         return false;
+    }
+
+    /**
+     * Valida se o arquivo é realmente uma imagem verificando os magic bytes (assinatura do arquivo)
+     * Previne upload de scripts maliciosos disfarçados como imagens
+     */
+    private boolean isValidImageFile(MultipartFile file) {
+        try (InputStream input = file.getInputStream()) {
+            byte[] fileSignature = new byte[12];
+            int bytesRead = input.read(fileSignature);
+            
+            if (bytesRead < 4) {
+                return false;
+            }
+            
+            // Verificar magic bytes de formatos de imagem comuns
+            // PNG: 89 50 4E 47
+            if (fileSignature[0] == (byte) 0x89 && fileSignature[1] == 0x50 && 
+                fileSignature[2] == 0x4E && fileSignature[3] == 0x47) {
+                return true;
+            }
+            
+            // JPEG: FF D8 FF
+            if (fileSignature[0] == (byte) 0xFF && fileSignature[1] == (byte) 0xD8 && 
+                fileSignature[2] == (byte) 0xFF) {
+                return true;
+            }
+            
+            // GIF: 47 49 46 38
+            if (fileSignature[0] == 0x47 && fileSignature[1] == 0x49 && 
+                fileSignature[2] == 0x46 && fileSignature[3] == 0x38) {
+                return true;
+            }
+            
+            // WebP: 52 49 46 46 ... 57 45 42 50
+            if (bytesRead >= 12 && fileSignature[0] == 0x52 && fileSignature[1] == 0x49 && 
+                fileSignature[2] == 0x46 && fileSignature[3] == 0x46 &&
+                fileSignature[8] == 0x57 && fileSignature[9] == 0x45 && 
+                fileSignature[10] == 0x42 && fileSignature[11] == 0x50) {
+                return true;
+            }
+            
+            return false;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     @DeleteMapping("/image/{filename}")

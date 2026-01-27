@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.security.core.Authentication;
-
 import java.util.Optional;
 
 @RestController
@@ -35,7 +34,7 @@ public class UserPageController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
         }
         
-        Optional<UserPage> existingPage = userPageRepository.findByUserId(user.getId());
+        Optional<UserPage> existingPage = userPageRepository.findByUser_Id(user.getId());
         if (existingPage.isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Usuário já possui uma página");
         }
@@ -62,7 +61,7 @@ public class UserPageController {
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
         }
-        UserPage userPage = userPageRepository.findByUserId(user.getId()).orElse(new UserPage());
+        UserPage userPage = userPageRepository.findByUser_Id(user.getId()).orElse(new UserPage());
         userPage.setUser(user);
         userPage.setBiography(userPageDto.getBiography());
         userPage.setProfileImageUrl(userPageDto.getProfileImageUrl());
@@ -87,7 +86,7 @@ public class UserPageController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
         }
         
-        Optional<UserPage> existingPage = userPageRepository.findByUserId(user.getId());
+        Optional<UserPage> existingPage = userPageRepository.findByUser_Id(user.getId());
         if (existingPage.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Página do usuário não encontrada");
         }
@@ -120,7 +119,7 @@ public class UserPageController {
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
         }
-        Optional<UserPage> optionalUserPage = userPageRepository.findByUserId(user.getId());
+        Optional<UserPage> optionalUserPage = userPageRepository.findByUser_Id(user.getId());
         UserPage userPage;
         
         if (optionalUserPage.isPresent()) {
@@ -159,7 +158,7 @@ public class UserPageController {
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
         }
-        Optional<UserPage> userPageOpt = userPageRepository.findByUserId(user.getId());
+        Optional<UserPage> userPageOpt = userPageRepository.findByUser_Id(user.getId());
         if (userPageOpt.isEmpty()) {
             return ResponseEntity.ok(new UserPageDto()); // Retorna vazio se não existir
         }
@@ -182,7 +181,7 @@ public class UserPageController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
         }
         
-        Optional<UserPage> userPageOpt = userPageRepository.findByUserId(user.getId());
+        Optional<UserPage> userPageOpt = userPageRepository.findByUser_Id(user.getId());
         if (userPageOpt.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Página do usuário não encontrada");
         }

@@ -146,8 +146,8 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         return;
     }
     
-    if (password.length < 6) {
-        errorDiv.textContent = 'A senha deve ter pelo menos 6 caracteres';
+    if (password.length < 8) {
+        errorDiv.textContent = 'A senha deve ter pelo menos 8 caracteres';
         errorDiv.classList.add('show');
         return;
     }

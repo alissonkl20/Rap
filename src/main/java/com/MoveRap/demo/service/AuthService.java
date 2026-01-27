@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.HttpStatus.TOO_MANY_REQUESTS;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
@@ -40,7 +39,7 @@ public class AuthService {
         return new UserDetalhamentoDto(user.getId(), user.getUsername(), user.getEmail());
     }
     public UserDetalhamentoDto authenticateUser(String emailOrUsername, String password) {
-        System.out.println("Autenticando usuário com email/username: " + emailOrUsername);
+        // Remover logs de segurança que expunham dados sensíveis
         
         // Verificar se a conta está bloqueada
         if (isAccountLocked(emailOrUsername)) {
@@ -53,19 +52,15 @@ public class AuthService {
             user = userRepository.findByUsername(emailOrUsername);
         }
         if (user != null) {
-            System.out.println("Usuário encontrado: " + user.getUsername());
             if (passwordEncoder.matches(password, user.getPassword())) {
-                System.out.println("Senha válida para o usuário: " + user.getUsername());
                 // Login bem-sucedido - resetar contador de tentativas
                 resetLoginAttempts(emailOrUsername);
                 return new UserDetalhamentoDto(user.getId(), user.getUsername(), user.getEmail());
             } else {
-                System.out.println("Senha inválida para o usuário: " + user.getUsername());
                 // Incrementar tentativas falhadas
                 recordFailedLoginAttempt(emailOrUsername);
             }
         } else {
-            System.out.println("Usuário não encontrado para o email/username: " + emailOrUsername);
             // Incrementar tentativas falhadas mesmo se usuário não existir (segurança)
             recordFailedLoginAttempt(emailOrUsername);
         }
@@ -102,7 +97,8 @@ public class AuthService {
         
         if (attempts >= MAX_LOGIN_ATTEMPTS) {
             lockoutTime.put(emailOrUsername, LocalDateTime.now());
-            System.out.println("Conta bloqueada para: " + emailOrUsername + " após " + attempts + " tentativas falhadas");
+            // Log seguro - não expõe dados completos do usuário
+            System.out.println("[SECURITY] Conta bloqueada após " + attempts + " tentativas falhadas");
         }
     }
     private void resetLoginAttempts(String emailOrUsername) {

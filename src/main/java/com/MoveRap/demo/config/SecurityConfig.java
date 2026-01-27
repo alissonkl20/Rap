@@ -52,7 +52,17 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable())
+            // CSRF habilitado - desabilitado apenas para endpoints públicos de autenticação
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/auth/**", "/user-page/public/**")
+            )
+            // Headers de segurança
+            .headers(headers -> headers
+                    .contentSecurityPolicy(csp -> csp
+                        .policyDirectives("default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;")
+                    )
+                    .frameOptions(frame -> frame.deny())
+                )
             .authorizeHttpRequests(auth -> auth
                     // Permitir rotas públicas (ordem IMPORTANTE - regras mais específicas primeiro)
                     .requestMatchers("/", "/index", "/index.html").permitAll()
@@ -90,10 +100,15 @@ public class SecurityConfig {
         configuration.addAllowedOrigin("http://127.0.0.1:5500"); // Live Server
         configuration.addAllowedOrigin("http://localhost:5500"); // Live Server alternativo
         configuration.addAllowedOrigin("http://127.0.0.1:8080"); // Acesso local
-        configuration.addAllowedOrigin("null"); // Arquivo local aberto diretamente
-        configuration.addAllowedMethod("*"); // Permite todos os métodos
+        // REMOVIDO: "null" - RISCO DE SEGURANÇA - nunca permitir origin null em produção
+        configuration.addAllowedMethod("GET");
+        configuration.addAllowedMethod("POST");
+        configuration.addAllowedMethod("PUT");
+        configuration.addAllowedMethod("DELETE");
+        configuration.addAllowedMethod("OPTIONS");
         configuration.addAllowedHeader("*"); // Permite todos os headers
         configuration.setAllowCredentials(true); // Permite credenciais
+        configuration.setMaxAge(3600L); // Cache preflight por 1 hora
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
